@@ -70,7 +70,7 @@ const SupportPage = () => {
                     <CustomCard
                         key={request.id}
                         className="grid grid-cols-5 items-center gap-8 py-6 px-8 hover:shadow-md transition-all duration-300"
-                        onClick={() => openModal(request)}
+                        
                     >
                         <div className="font-medium">{request.name}</div>
                         <div className="text-gray-600">{request.email}</div>

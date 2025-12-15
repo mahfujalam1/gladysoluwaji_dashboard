@@ -15,8 +15,28 @@ import PrivacyPage from '../pages/setting/PrivacyPage';
 import ProfilePage from '../pages/profile/ProfilePage';
 import ChangePasswordPage from '../pages/profile/ChangePassword';
 import EditProfile from '../pages/profile/EditProfile';
+import LoginPage from '../pages/auth/LoginPage';
+import ForgotPasswordPage from '../pages/auth/ForgotPasswordPage';
+import OtpPage from '../pages/auth/OtpPage';
+import ResetPasswordPage from '../pages/auth/ResetPasswordPage';
 
 const router = createBrowserRouter([
+  {
+    path: '/login',
+    element: <LoginPage />,
+  },
+  {
+    path: '/forgot-password',
+    element: <ForgotPasswordPage />,
+  },
+  {
+    path: '/otp',
+    element: <OtpPage />,
+  },
+  {
+    path: '/reset-password',
+    element: <ResetPasswordPage />,
+  },
   {
     path: '/',
     element: <App />,

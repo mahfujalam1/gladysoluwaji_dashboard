@@ -10,7 +10,7 @@ import toast from '../../utils/toast';
 const EditProfile = () => {
     const navigate = useNavigate();
     const [form] = Form.useForm();
-    const [preview, setPreview] = useState(avatar);
+    const [preview, setPreview] = useState('https://placehold.net/avatar.svg');
 
     // Initial Data
     const profileData = {
@@ -35,11 +35,15 @@ const EditProfile = () => {
 
     return (
         <div>
-            <h1 className="text-2xl font-bold mb-4 items-center flex">
-                <span onClick={() => navigate(-1)} className='rounded-full h-10 w-10 bg-white mr-4 cursor-pointer'>
-                    <IoIosArrowBack size={38} />
-                </span>
-                Update Profile
+            <h1 className="flex items-center text-2xl font-bold mb-4">
+                <button
+                    onClick={() => navigate(-1)}
+                    className="mr-3 flex items-center justify-center h-10 w-10 rounded-full bg-white cursor-pointer"
+                    aria-label="Go back"
+                >
+                    <IoIosArrowBack size={22} />
+                </button>
+                <span>Update Profile</span>
             </h1>
 
             <CustomCard className="p-8 w-full max-w-md">

@@ -12,7 +12,7 @@ const Admin = () => {
     const [adminData, setAdminData] = useState([
         {
             id: 1,
-            avatar: ProfileImg,
+            avatar: 'https://placehold.net/avatar.svg',
             name: 'Tiago Felipe',
             email: 'tiagofelipe@mail.com',
             phone: '0123456789',
@@ -21,16 +21,16 @@ const Admin = () => {
         },
         {
             id: 2,
-            avatar: ProfileImg,
+            avatar: 'https://placehold.net/avatar.svg',
             name: 'Tiago Felipe',
             email: 'tiagofelipe@mail.com',
             phone: '0123456789',
             date: '21 Nov 2025',
-            blocked: false,
+            blocked: true,
         },
         {
             id: 3,
-            avatar: ProfileImg,
+            avatar: 'https://placehold.net/avatar.svg',
             name: 'Tiago Felipe',
             email: 'tiagofelipe@mail.com',
             phone: '0123456789',
@@ -67,7 +67,7 @@ const Admin = () => {
     const handleAddAdmin = (values) => {
         const newAdmin = {
             id: adminData.length > 0 ? Math.max(...adminData.map(admin => admin.id)) + 1 : 1,
-            avatar: ProfileImg,
+            avatar: "https://placehold.net/avatar.svg",
             name: `${values.firstName} ${values.lastName}`,
             email: values.email,
             phone: values.phone,
@@ -82,7 +82,7 @@ const Admin = () => {
     return (
         <div>
             <div className='flex justify-between items-center mb-4'>
-                <h1 className="p-2 font-bold text-xl">Admin Management</h1>
+                <h1 className="text-2xl font-bold mb-6">Admin Management</h1>
                 <div className='items-center py-1'>
                     <CustomButton type="primary" title="Add Admin" className="text-sm! font-bold! p-4!" onClick={showModal}>
                         Add Admin

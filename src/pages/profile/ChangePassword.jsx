@@ -17,11 +17,15 @@ const ChangePasswordPage = () => {
 
     return (
         <div className="">
-            <h1 className="text-2xl font-bold mb-4 flex">
-                <span onClick={() => navigate(-1)} className='rounded-full h-10 w-10 bg-white mr-4 cursor-pointer'>
-                    <IoIosArrowBack size={38} />
-                </span>
-                Change Password
+            <h1 className="flex items-center text-2xl font-bold mb-4">
+                <button
+                    onClick={() => navigate(-1)}
+                    className="mr-3 flex items-center justify-center h-10 w-10 rounded-full bg-white cursor-pointer"
+                    aria-label="Go back"
+                >
+                    <IoIosArrowBack size={22} />
+                </button>
+                <span>Change Password</span>
             </h1>
 
             <CustomCard className="p-8 w-full max-w-md">

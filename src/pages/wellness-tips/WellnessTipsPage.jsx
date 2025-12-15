@@ -3,6 +3,8 @@ import CustomButton from '../../components/shared/Button';
 import CustomCard from '../../components/common/CustomCard';
 import CustomPopconfirm from '../../components/shared/Popconfirm';
 import CustomPagination from '../../components/shared/Pagination';
+import toast from '../../utils/toast';
+import { Button } from 'antd';
 
 const WellnessTipsPage = () => {
     const [tips, setTips] = useState([
@@ -19,15 +21,38 @@ const WellnessTipsPage = () => {
     const [tipsPerPage] = useState(5);
     const maxChars = 180;
 
+    const [editingTipId, setEditingTipId] = useState(null);
+    const [editingTipText, setEditingTipText] = useState('');
+
     const handlePost = () => {
         if (newTip.trim() === '') return;
+        toast.success("Tip posted successfully!");
         const newId = tips.length > 0 ? Math.max(...tips.map(tip => tip.id)) + 1 : 1;
         setTips([{ id: newId, text: newTip }, ...tips]);
         setNewTip('');
     };
 
     const handleDelete = (id) => {
+        toast.success("Tip deleted successfully!");
         setTips(tips.filter(tip => tip.id !== id));
+    };
+
+    const handleEdit = (tip) => {
+        setEditingTipId(tip.id);
+        setEditingTipText(tip.text);
+    };
+
+    const handleUpdate = () => {
+        if (editingTipText.trim() === '') return;
+        toast.success("Tip updated successfully!");
+        setTips(tips.map(tip => (tip.id === editingTipId ? { ...tip, text: editingTipText } : tip)));
+        setEditingTipId(null);
+        setEditingTipText('');
+    };
+
+    const handleCancelEdit = () => {
+        setEditingTipId(null);
+        setEditingTipText('');
     };
 
     const indexOfLastTip = currentPage * tipsPerPage;
@@ -46,7 +71,7 @@ const WellnessTipsPage = () => {
                 <textarea
                     value={newTip}
                     onChange={(e) => setNewTip(e.target.value)}
-                    placeholder="Write Here ......"
+                    placeholder="Write here..."
                     maxLength={maxChars}
                     className="w-full h-32 p-2 border rounded-md border-gray-200 resize-none focus:outline-none focus:ring-1 focus:ring-[#008dc0]"
                 ></textarea>
@@ -64,25 +89,52 @@ const WellnessTipsPage = () => {
 
             <div className="space-y-4">
                 {currentTips.map(tip => (
-                    <CustomCard key={tip.id} className="p-4 flex justify-between items-center">
-                        <p className="text-gray-700 truncate max-w-[1000px]">{tip.text}</p>
-                        <div className="flex space-x-2">
-                            <CustomPopconfirm
-                                title="Are you sure to delete this tip?"
-                                onConfirm={() => handleDelete(tip.id)}
-                                okText="Yes"
-                                cancelText="No"
+                    <div key={tip.id}>
+                        {editingTipId === tip.id ? (
+                            <CustomCard className="p-4 mb-6">
+                                <textarea
+                                    value={editingTipText}
+                                    onChange={(e) => setEditingTipText(e.target.value)}
+                                    placeholder="Write here..."
+                                    maxLength={maxChars}
+                                    className="w-full h-26 p-2 border rounded-md border-gray-200 resize-none focus:outline-none focus:ring-1 focus:ring-[#008dc0]"
+                                ></textarea>
+                                <div className="flex justify-between mt-2">
+                                    <p className="text-xs text-gray-400">
+                                        Maximum {maxChars} Character
+                                    </p>
+                                    <div className='flex items-center gap-4'>
+                                        <Button danger onClick={handleCancelEdit}>
+                                            Cancel
+                                        </Button>
+                                        <CustomButton type="primary" className='' onClick={handleUpdate}>
+                                            Update
+                                        </CustomButton>
+                                    </div>
+                                </div>
+                            </CustomCard>
+                        ) : (
+                            <CustomCard className="p-4 flex justify-between items-center">
+                                <p className="text-gray-700 truncate max-w-[1000px]">{tip.text}</p>
+                                <div className="flex space-x-2">
+                                    <CustomPopconfirm
+                                        title="Are you sure to delete this tip?"
+                                        onConfirm={() => handleDelete(tip.id)}
+                                        okText="Yes"
+                                        cancelText="No"
 
-                            > <CustomButton title="Delete Post" className='bg-red-500! text-white! hover:bg-red-600! border-none!'>
-                                    Delete
-                                </CustomButton>
-                            </CustomPopconfirm>
+                                    > <CustomButton title="Delete Post" className='bg-red-500! text-white! hover:bg-red-600! border-none!'>
+                                            Delete
+                                        </CustomButton>
+                                    </CustomPopconfirm>
 
-                            <CustomButton title="Edit Post" type="primary">
-                                Edit
-                            </CustomButton>
-                        </div>
-                    </CustomCard>
+                                    <CustomButton title="Edit Post" type="primary" onClick={() => handleEdit(tip)}>
+                                        Edit
+                                    </CustomButton>
+                                </div>
+                            </CustomCard>
+                        )}
+                    </div>
                 ))}
                 <CustomPagination
                     total={tips.length}

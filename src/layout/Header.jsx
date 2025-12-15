@@ -4,7 +4,7 @@ import SearchInput from '../components/common/SearchInput';
 import { useNavigate } from 'react-router-dom';
 
 const AppHeader = () => {
-  const avatar = 'https://i.pravatar.cc/200';
+  const avatar = 'https://placehold.net/avatar.svg';
   const navigate = useNavigate();
 
   return (
@@ -13,8 +13,9 @@ const AppHeader = () => {
         <div className="flex items-start ml-5">
           <SearchInput />
         </div>
-        <div className="flex items-center space-x-5 mr-4">
+        <div className="flex items-center space-x-3 mr-4">
           {/* <LuBell className="h-7 w-7 text-gray-600 cursor-pointer" /> */}
+          <h3 className='font-semibold'>Faris Shafi</h3>
           <img
             src={avatar}
             alt="User Avatar"
