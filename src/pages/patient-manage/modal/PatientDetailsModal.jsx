@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Modal, Tag } from 'antd';
 import CustomButton from '../../../components/shared/Button';
 
@@ -6,6 +6,15 @@ const PatientDetailsModal = ({ open, onClose, patient }) => {
     if (!patient) {
         return null;
     }
+
+    const [copied, setCopied] = useState(false);
+
+    const handleCopy = () => {
+        navigator.clipboard.writeText(patient.id.toString());
+        setCopied(true);
+
+        setTimeout(() => setCopied(false), 1200);
+    };
 
     return (
         <Modal
@@ -27,8 +36,12 @@ const PatientDetailsModal = ({ open, onClose, patient }) => {
                 <div className="flex items-center mb-8">
                     <img src={patient.avatar} alt={patient.name} className="w-24 h-24 rounded-full mr-6" />
                     <div>
-                        <div className="inline-block border border-[#006C93] text-[#006C93] rounded-full px-2 py-1 text-md mb-2">
-                            ID: {patient.id}
+                        <div
+                            onClick={handleCopy}
+                            className={`inline-block border border-[#006C93] text-[#006C93] rounded-full px-2 py-1 text-sm cursor-pointer transition-all duration-300 ${copied ? "border-green-600 text-green-600" : ""
+                                }`}
+                        >
+                            {copied ? "Copied!" : `ID: ${patient.id}`}
                         </div>
                         <h3 className="text-2xl font-bold">{patient.name}</h3>
                         <p className="text-gray-800">{patient.email}</p>

@@ -19,6 +19,7 @@ import LoginPage from '../pages/auth/LoginPage';
 import ForgotPasswordPage from '../pages/auth/ForgotPasswordPage';
 import OtpPage from '../pages/auth/OtpPage';
 import ResetPasswordPage from '../pages/auth/ResetPasswordPage';
+import DoctorAllAppointments from '../pages/doctor-manage/DoctorAllAppointments';
 
 const router = createBrowserRouter([
   {
@@ -56,6 +57,10 @@ const router = createBrowserRouter([
       {
         path: '/doctors',
         element: <DoctorsPage />,
+      },
+      {
+        path: '/doctor-appointment-list',
+        element: <DoctorAllAppointments />,
       },
       {
         path: '/patients',

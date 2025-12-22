@@ -20,10 +20,10 @@ const ChangePasswordPage = () => {
             <h1 className="flex items-center text-2xl font-bold mb-4">
                 <button
                     onClick={() => navigate(-1)}
-                    className="mr-3 flex items-center justify-center h-10 w-10 rounded-full bg-white cursor-pointer"
+                    className="mr-3 flex items-center justify-center h-8 w-8 rounded-full bg-white cursor-pointer"
                     aria-label="Go back"
                 >
-                    <IoIosArrowBack size={22} />
+                    <IoIosArrowBack size={20} />
                 </button>
                 <span>Change Password</span>
             </h1>

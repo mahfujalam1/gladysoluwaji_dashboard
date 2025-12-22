@@ -18,7 +18,7 @@ export const sidebarLinks = [
     icon: <LuLayoutDashboard />,
   },
   {
-    label: "Appointment Status",
+    label: "Appointments",
     path: "/appointments",
     icon: <LuCalendarDays />,
   },
