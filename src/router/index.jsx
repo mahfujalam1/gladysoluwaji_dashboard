@@ -3,6 +3,9 @@ import { createBrowserRouter } from 'react-router-dom';
 import App from '../App';
 import DashboardPage from '../pages/dashboard/DashboardPage';
 import AppointmentsPage from '../pages/appointment/AppointmentsPage';
+import FundTransfer from '../pages/appointment/FundTransfer';
+import FundReturn from '../pages/appointment/FundReturn';
+import DoctorRequestDetails from '../pages/new-doctor-req/DoctorRequestDetails';
 import DoctorRequestsPage from '../pages/new-doctor-req/DoctorRequestsPage';
 import DoctorsPage from '../pages/doctor-manage/DoctorsPage';
 import PatientsPage from '../pages/patient-manage/PatientsPage';
@@ -46,9 +49,21 @@ const router = createBrowserRouter([
         path: '/',
         element: <DashboardPage />,
       },
-     {
+      {
         path: '/appointments',
         element: <AppointmentsPage />,
+      },
+      {
+        path: '/fund-transfer',
+        element: <FundTransfer/>,
+      },
+      {
+        path: '/fund-return',
+        element: <FundReturn />,
+      },
+      {
+        path: '/doctor-requests-details',
+        element: <DoctorRequestDetails />,
       },
       {
         path: '/doctor-requests',

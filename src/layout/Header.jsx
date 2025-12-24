@@ -2,9 +2,9 @@ import React from 'react';
 import { LuBell } from 'react-icons/lu';
 import SearchInput from '../components/common/SearchInput';
 import { useNavigate } from 'react-router-dom';
+import ProfileImage from '../components/common/ProfileImage';
 
 const AppHeader = () => {
-  const avatar = 'https://placehold.net/avatar.svg';
   const navigate = useNavigate();
 
   return (
@@ -16,10 +16,8 @@ const AppHeader = () => {
         <div className="flex items-center space-x-3 mr-4">
           {/* <LuBell className="h-7 w-7 text-gray-600 cursor-pointer" /> */}
           <h3 className='font-semibold'>Faris Shafi</h3>
-          <img
-            src={avatar}
-            alt="User Avatar"
-            className="h-12 w-12 rounded-full object-cover cursor-pointer"
+          <ProfileImage
+            className="h-12 w-12 cursor-pointer"
             onClick={() => navigate('/profile')}
           />
         </div>

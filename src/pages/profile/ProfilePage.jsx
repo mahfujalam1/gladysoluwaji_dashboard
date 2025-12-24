@@ -3,6 +3,7 @@ import CustomCard from '../../components/common/CustomCard';
 import { FiChevronRight, FiLogOut } from 'react-icons/fi';
 import { useNavigate } from 'react-router-dom';
 import { FaRegEdit } from 'react-icons/fa';
+import ProfileImage from '../../components/common/ProfileImage';
 
 const ProfilePage = () => {
     const navigate = useNavigate();
@@ -29,11 +30,9 @@ const ProfilePage = () => {
                     </div>
 
                     {/* Avatar + Name + Email */}
-                    <div className="">
-                        <img
-                            src={profileData.avatar}
-                            alt="Avatar"
-                            className="w-24 h-24 rounded-full object-cover mb-4"
+                    <div>
+                        <ProfileImage
+                            className="w-24 h-24 mb-4"
                         />
                         <div>
                             <h2 className="text-lg font-bold">{profileData.name}</h2>

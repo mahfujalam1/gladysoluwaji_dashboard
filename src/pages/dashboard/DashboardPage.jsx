@@ -5,7 +5,6 @@ import RevenueActivityChart from '../../components/charts/RevenueActivityChart';
 import StatusDonutChart from '../../components/charts/StatusDonutChart';
 import CustomSelect from '../../components/common/CustomSelect';
 import { LuDownload, LuFolderCheck } from 'react-icons/lu';
-// import { MdCancelPresentation } from 'react-icons/md';
 import { PiUsersBold, PiUsersThreeBold } from 'react-icons/pi';
 
 const DashboardPage = () => {
@@ -29,7 +28,6 @@ const DashboardPage = () => {
         <StatisticCard icon={<PiUsersBold />} value="31" label="Total Doctors" />
         <StatisticCard icon={<LuDownload />} value="746" label="Total Request" />
         <StatisticCard icon={<LuFolderCheck />} value="631" label="Complete Consultation" />
-        {/* <StatisticCard icon={<MdCancelPresentation />} value="238" label="Total Cancelled" /> */}
       </div>
 
       {/* Revenue Activity and Revenue/Status */}

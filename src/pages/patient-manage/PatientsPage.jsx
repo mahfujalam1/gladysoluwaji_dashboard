@@ -5,6 +5,7 @@ import CustomPopconfirm from '../../components/shared/Popconfirm';
 import toast from '../../utils/toast';
 import PatientDetails from './modal/PatientDetailsModal';
 import { LuTrash2 } from 'react-icons/lu';
+import CustomPagination from '../../components/shared/Pagination';
 
 const dummyPatients = [
     {
@@ -116,7 +117,10 @@ const PatientsPage = () => {
     const [isModalVisible, setIsModalVisible] = useState(false);
     const [selectedPatient, setSelectedPatient] = useState(null);
 
-        const handleDelete = (id) => {
+    const [currentPage, setCurrentPage] = useState(1);
+    const [patientsPerPage] = useState(10);
+
+    const handleDelete = (id) => {
         toast.success("Patient deleted successfully!");
         setPatients(prev => prev.filter(patient => patient.id !== id));
     };
@@ -133,7 +137,6 @@ const PatientsPage = () => {
     };
 
     const showModal = (patient) => {
-
         setSelectedPatient(patient);
         setIsModalVisible(true);
     };
@@ -141,6 +144,15 @@ const PatientsPage = () => {
     const handleClose = () => {
         setIsModalVisible(false);
         setSelectedPatient(null);
+    };
+
+    // Pagination logic
+    const indexOfLastPatient = currentPage * patientsPerPage;
+    const indexOfFirstPatient = indexOfLastPatient - patientsPerPage;
+    const currentPatients = patients.slice(indexOfFirstPatient, indexOfLastPatient);
+
+    const handlePageChange = (page) => {
+        setCurrentPage(page);
     };
 
     return (
@@ -152,7 +164,7 @@ const PatientsPage = () => {
             <div className="grid grid-cols-1 gap-3">
                 {/* Header */}
                 <div className="grid grid-cols-6 gap-6 text-gray-500 font-semibold mb-2 px-8">
-                    <div>Patient</div>
+                    <div>Patients</div>
                     <div>ID</div>
                     <div>Contact number</div>
                     <div>Email address</div>
@@ -161,7 +173,7 @@ const PatientsPage = () => {
                 </div>
 
                 {/* Rows */}
-                {patients.map((patient) => (
+                {currentPatients.map((patient) => (
                     <CustomCard
                         key={patient.id}
                         onClick={() => showModal(patient)}
@@ -223,6 +235,15 @@ const PatientsPage = () => {
 
                     </CustomCard>
                 ))}
+            </div>
+
+            <div className='flex justify-end mt-6'>
+                <CustomPagination
+                    total={patients.length}
+                    pageSize={patientsPerPage}
+                    onChange={handlePageChange}
+                    current={currentPage}
+                />
             </div>
 
             <PatientDetails

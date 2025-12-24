@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Collapse, Modal, Tag } from 'antd';
+import { Collapse, Image, Modal, Tag } from 'antd';
 
 const { Panel } = Collapse;
 
@@ -28,7 +28,7 @@ const DoctorDetailsModal = ({ open, onClose, doctor }) => {
                 footer={null}
                 width={950}
             >
-                <div className="p-4 bg-white text-gray-900 max-w-6xl mx-auto">
+                <div className="p-4 bg-white text-gray-900 mx-auto">
                     {/* Header Section */}
                     <div className="flex justify-between items-start mb-5">
                         <div className="flex items-center">
@@ -38,8 +38,6 @@ const DoctorDetailsModal = ({ open, onClose, doctor }) => {
                                 className="w-32 h-32 rounded-full object-cover mr-6"
                             />
                             <div>
-
-
 
                                 <div className='flex gap-2'>
                                     <h2 className="text-2xl font-bold">{doctor.name}</h2>
@@ -60,13 +58,11 @@ const DoctorDetailsModal = ({ open, onClose, doctor }) => {
                             </div>
                         </div>
 
-
                         <div className="text-right text-sm text-gray-700">
                             <p><span className="font-semibold">Requested Date:</span> {doctor.requestedDate}</p>
                             <p><span className="font-semibold">Approval Date:</span> {doctor.approvalDate}</p>
                         </div>
                     </div>
-
 
                     {/* About + Services */}
                     <div className="flex justify-between mb-5">
@@ -74,7 +70,6 @@ const DoctorDetailsModal = ({ open, onClose, doctor }) => {
                             <h3 className="font-semibold text-lg mb-2">About</h3>
                             <p className="text-gray-700 leading-relaxed">{doctor.about}</p>
                         </div>
-
 
                         <div className="w-1/3">
                             <h3 className="font-semibold text-lg mb-2 text-right">Services</h3>
@@ -88,7 +83,6 @@ const DoctorDetailsModal = ({ open, onClose, doctor }) => {
                             </ul>
                         </div>
                     </div>
-
 
                     {/* Bank + exp */}
                     <div className="flex justify-between mb-8">
@@ -124,22 +118,21 @@ const DoctorDetailsModal = ({ open, onClose, doctor }) => {
                                 </div>
                             </div>
                         )}
-
                     </div>
-
 
                     <div className='mt-4'>
                         <Collapse>
                             <Panel header="Documents">
                                 <div className='flex gap-2'>
+                                    <Image.PreviewGroup>
                                     {doctor.documents?.length > 0 ? (
                                         doctor.documents.map((document, index) => {
                                             return (
-                                                <img
+                                                <Image
                                                     key={index}
                                                     src={document.ImageUrl}
                                                     alt=""
-                                                    className="w-32 h-32 object-cover rounded-xl cursor-pointer hover:opacity-90"
+                                                    className="w-32! h-32!"
                                                     onClick={() => setPreview(document.ImageUrl)}
                                                 />
                                             );
@@ -147,24 +140,12 @@ const DoctorDetailsModal = ({ open, onClose, doctor }) => {
                                     ) : (
                                         <p>No Documents found.</p>
                                     )}
+                                    </Image.PreviewGroup>
                                 </div>
                             </Panel>
                         </Collapse>
                     </div>
                 </div >
-            </Modal >
-
-            {/* Image Preview Modal */}
-            <Modal
-                open={!!preview}
-                footer={null}
-                onCancel={() => setPreview(null)}
-            >
-                <img
-                    src={preview}
-                    alt="Preview"
-                    className="w-full h-auto rounded"
-                />
             </Modal >
         </div >
     );

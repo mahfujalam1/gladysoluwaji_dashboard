@@ -1,16 +1,16 @@
 import React, { useState } from 'react';
 import CustomCard from '../../components/common/CustomCard';
 import { Button, Input, Form } from 'antd';
-import avatar from '../../assets/avater.png';
 import { FaCamera } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 import { IoIosArrowBack } from 'react-icons/io';
 import toast from '../../utils/toast';
+import ProfileImage from '../../components/common/ProfileImage';
 
 const EditProfile = () => {
     const navigate = useNavigate();
     const [form] = Form.useForm();
-    const [preview, setPreview] = useState('https://placehold.net/avatar.svg');
+    const [preview, setPreview] = useState('');
 
     // Initial Data
     const profileData = {
@@ -51,10 +51,9 @@ const EditProfile = () => {
 
                     {/* Profile Image */}
                     <div className="flex items-center gap-4 mb-6">
-                        <img
+                        <ProfileImage
                             src={preview}
-                            alt="Profile"
-                            className="w-24 h-24 rounded-full object-cover"
+                            className="w-24 h-24"
                         />
 
                         <label className="cursor-pointer flex items-center gap-2 text-sm text-[#005877] font-medium">

@@ -10,6 +10,13 @@ const CustomPopconfirm = ({ children, title, onConfirm, onCancel, okText = 'Yes'
       okText={okText}
       cancelText={cancelText}
       placement="topRight"
+      okButtonProps={{
+        style: {
+          backgroundColor: '#006C93',
+          borderColor: '#006C93',
+          color: '#fff',
+        },
+      }}
     >
       {children}
     </Popconfirm>

@@ -8,21 +8,22 @@ import DoctorDetailsModal from './modal/DoctorDetailsModal';
 import image1 from '../../assets/_n.jpg'
 import image2 from '../../assets/n.jpg'
 import { useNavigate } from 'react-router-dom';
+import CustomPagination from '../../components/shared/Pagination';
 
 const dummyDoctors = [
     {
         id: '20215156471',
         name: 'Dr. Elowyn Starcrest',
-        specialist: 'Dentist',
+        specialist: 'Dermatologist',
         hospital: 'Central Dental Care',
-        avatar: 'https://placehold.net/avatar.svg?text=TF&bg=212121',
+        avatar: 'https://placehold.net/avatar.svg?text=ES&bg=212121',
         phone: '+234 54564 5565',
         email: 'elowynstarcrest@gmail.com',
         nationalId: '1012635654112',
         requestedDate: '8 Nov 2025',
         approvalDate: '8 Nov 2025',
         isBlock: false,
-        about: 'Dr. Elowyn Starcrest is a compassionate and highly skilled physician known for her patient-centered approach and dedication to delivering exceptional care. With a strong commitment to evidence-based medicine.',
+        about: 'Dr. Elowyn Starcrest is a compassionate and highly skilled physician known for her patient-centered approach and dedication to delivering exceptional care.',
         services: ['Bridge', 'Dental Cleaning', 'Pediatric Dentist Consultation', 'Dental Consultation', 'Root Canal'],
         bankInfo: {
             bankName: 'First Bank Of Nigeria',
@@ -49,7 +50,7 @@ const dummyDoctors = [
     {
         id: '20215156465',
         name: 'Taigo Felipe',
-        specialist: 'Oncologists',
+        specialist: 'Dermatologist',
         hospital: 'General Hospital',
         avatar: 'https://placehold.net/avatar.svg?text=TF&bg=212121',
         phone: '+234 54564 5565',
@@ -85,7 +86,7 @@ const dummyDoctors = [
     {
         id: '20215156466',
         name: 'Jane Doe',
-        specialist: 'Pulmonologist',
+        specialist: 'Dermatologist',
         hospital: 'City Clinic',
         avatar: 'https://placehold.net/avatar.svg?text=JD&bg=212121',
         phone: '+1 555 123 4567',
@@ -116,7 +117,72 @@ const dummyDoctors = [
                 duration: '4 years'
             }
         ],
-
+    },
+    {
+        id: '20215156472',
+        name: 'Dr. John Appleseed',
+        specialist: 'Cardiologist',
+        hospital: 'Heartbeat Hospital',
+        avatar: 'https://placehold.net/avatar.svg?text=JA&bg=212121',
+        phone: '+1 123 456 7890',
+        email: 'john.appleseed@email.com',
+        nationalId: '9876543210',
+        requestedDate: '10 Nov 2025',
+        approvalDate: '11 Nov 2025',
+        isBlock: false,
+        about: 'Expert in cardiovascular diseases.',
+        services: ['ECG', 'Echocardiogram'],
+        bankInfo: {
+            bankName: 'Chase Bank',
+            accountName: 'John Appleseed',
+            accountNumber: '1122334455',
+        },
+        experience: [],
+        documents: [{ ImageUrl: image1 }],
+    },
+    {
+        id: '20215156473',
+        name: 'Dr. Sarah Connor',
+        specialist: 'Neurologist',
+        hospital: 'Mind Matters Clinic',
+        avatar: 'https://placehold.net/avatar.svg?text=SC&bg=212121',
+        phone: '+44 77 1234 5678',
+        email: 'sarah.connor@email.com',
+        nationalId: '5432109876',
+        requestedDate: '12 Nov 2025',
+        approvalDate: '13 Nov 2025',
+        isBlock: false,
+        about: 'Specializes in brain and nervous system disorders.',
+        services: ['EEG', 'MRI Scan'],
+        bankInfo: {
+            bankName: 'Barclays',
+            accountName: 'Sarah Connor',
+            accountNumber: '6677889900',
+        },
+        experience: [],
+        documents: [],
+    },
+    {
+        id: '20215156474',
+        name: 'Dr. Kyle Reese',
+        specialist: 'Orthopedist',
+        hospital: 'Bone & Joint Center',
+        avatar: 'https://placehold.net/avatar.svg?text=KR&bg=212121',
+        phone: '+1 987 654 3210',
+        email: 'kyle.reese@email.com',
+        nationalId: '6789012345',
+        requestedDate: '14 Nov 2025',
+        approvalDate: '15 Nov 2025',
+        isBlock: true,
+        about: 'Focused on musculoskeletal system.',
+        services: ['X-Ray', 'Fracture Care'],
+        bankInfo: {
+            bankName: 'Citi Bank',
+            accountName: 'Kyle Reese',
+            accountNumber: '5544332211',
+        },
+        experience: [],
+        documents: [{ ImageUrl: image2 }],
     },
 ];
 
@@ -124,8 +190,10 @@ const DoctorsPage = () => {
     const [Doctors, setDoctors] = useState(dummyDoctors);
     const [isModalVisible, setIsModalVisible] = useState(false);
     const [selectedDoctor, setSelectedDoctor] = useState(null);
-
     const navigate = useNavigate();
+
+    const [currentPage, setCurrentPage] = useState(1);
+    const [doctorsPerPage] = useState(10);
 
     const handleDelete = (id) => {
         toast.success("Doctor deleted successfully!");
@@ -144,7 +212,6 @@ const DoctorsPage = () => {
     };
 
     const showModal = (doctor) => {
-
         setSelectedDoctor(doctor);
         setIsModalVisible(true);
     };
@@ -152,6 +219,15 @@ const DoctorsPage = () => {
     const handleClose = () => {
         setIsModalVisible(false);
         setSelectedDoctor(null);
+    };
+
+    // Pagination logic
+    const indexOfLastDoctor = currentPage * doctorsPerPage;
+    const indexOfFirstDoctor = indexOfLastDoctor - doctorsPerPage;
+    const currentDoctors = Doctors.slice(indexOfFirstDoctor, indexOfLastDoctor);
+
+    const handlePageChange = (page) => {
+        setCurrentPage(page);
     };
 
     return (
@@ -172,11 +248,11 @@ const DoctorsPage = () => {
                 </div>
 
                 {/* Rows */}
-                {Doctors.map((doctor) => (
+                {currentDoctors.map((doctor) => (
                     <CustomCard
                         key={doctor.id}
                         className="grid grid-cols-6 items-center gap-10 py-4 px-8 hover:shadow-md transition-all duration-300 cursor-pointer"
-                         onClick={() => navigate("/doctor-appointment-list", { state: { name } })}
+                        onClick={() => navigate("/doctor-appointment-list", { state: { name: doctor.name, hospital: doctor.hospital, specialist: doctor.specialist } })}
                     >
                         <div className="flex items-center gap-3">
                             <img
@@ -200,7 +276,7 @@ const DoctorsPage = () => {
                             onClick={(e) => e.stopPropagation()}
                         >
                             {/* VIEW BUTTON */}
-                            <FaEye title='View Doctor'
+                            <FaEye title='Doctor Details'
                                 size={22}
                                 className="text-[#0087b8] cursor-pointer hover:text-[#006e96]"
                                 onClick={() => showModal(doctor)}
@@ -243,6 +319,15 @@ const DoctorsPage = () => {
 
                     </CustomCard>
                 ))}
+            </div>
+
+            <div className='flex justify-end mt-6'>
+                <CustomPagination
+                    total={Doctors.length}
+                    pageSize={doctorsPerPage}
+                    onChange={handlePageChange}
+                    current={currentPage}
+                />
             </div>
 
             <DoctorDetailsModal

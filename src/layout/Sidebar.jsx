@@ -35,7 +35,9 @@ const Sidebar = () => {
         <div className="sidebar-menu">
           <ul className="nav-links">
             {sidebarLinks.map((link) => {
-              const isActive = pathname === link.path;
+              const isActive =
+                pathname === link.path ||
+                (link.activePaths && link.activePaths.includes(pathname));
 
               return (
                 <li

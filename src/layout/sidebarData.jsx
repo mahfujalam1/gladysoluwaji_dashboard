@@ -21,16 +21,19 @@ export const sidebarLinks = [
     label: "Appointments",
     path: "/appointments",
     icon: <LuCalendarDays />,
+    activePaths: ["/fund-transfer", "/fund-return"],
   },
   {
     label: "New Doctor Request",
     path: "/doctor-requests",
     icon: <LuUserPlus />,
+    activePaths: ["/doctor-requests-details"],
   },
   {
     label: "Doctor Management",
     path: "/doctors",
     icon: <FaUserDoctor />,
+    activePaths: ["/doctor-appointment-list"],
   },
   {
     label: "Patient Management",
