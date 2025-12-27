@@ -13,6 +13,7 @@ const dummyDoctors = [
         avatar: 'https://placehold.net/avatar.svg?text=TF&bg=212121',
         email: 'tiagofelipe@email.com',
         transferAmount: '120.00',
+        date: '2025-12-25',
         bankInfo: {
             bankName: 'Citi Bank',
             accountName: 'Taigo Felipe',
@@ -25,6 +26,7 @@ const dummyDoctors = [
         avatar: 'https://placehold.net/avatar.svg?text=JD&bg=212121',
         email: 'janedoe@email.com',
         transferAmount: '142.00',
+        date: '2025-12-31',
         bankInfo: {
             bankName: 'Citi Bank',
             accountName: 'Jane Doe',
@@ -37,6 +39,7 @@ const dummyDoctors = [
         avatar: 'https://placehold.net/avatar.svg?text=JS&bg=212121',
         email: 'johnsmith@email.com',
         transferAmount: '1542.00',
+        date: '2025-12-01',
         bankInfo: {
             bankName: 'Citi Bank',
             accountName: 'John Smith',
@@ -49,6 +52,7 @@ const dummyDoctors = [
         avatar: 'https://placehold.net/avatar.svg?text=EJ&bg=212121',
         email: 'emilyjones@email.com',
         transferAmount: '212.00',
+        date: '2025-12-20',
         bankInfo: {
             bankName: 'Citi Bank',
             accountName: 'Emily Jones',
@@ -61,6 +65,7 @@ const dummyDoctors = [
         avatar: 'https://placehold.net/avatar.svg?text=MB&bg=212121',
         email: 'michael.brown@email.com',
         transferAmount: '1112.00',
+        date: '2025-12-08',
         bankInfo: {
             bankName: 'Citi Bank',
             accountName: 'Michael Brown',
@@ -73,6 +78,7 @@ const dummyDoctors = [
         avatar: 'https://placehold.net/avatar.svg?text=SW&bg=212121',
         email: 'sarah.wilson@email.com',
         transferAmount: '4812.00',
+        date: '2025-12-05',
         bankInfo: {
             bankName: 'Citi Bank',
             accountName: 'Sarah Wilson',
@@ -82,8 +88,8 @@ const dummyDoctors = [
 
 ];
 
-const DoctorRequestsPage = () => {
-    const [doctors, setDoctors] = useState(dummyDoctors);
+const FundTransfer = () => {
+    const [doctors] = useState(dummyDoctors);
     const navigate = useNavigate();
 
     const [currentPage, setCurrentPage] = useState(1);
@@ -124,7 +130,7 @@ const DoctorRequestsPage = () => {
                     <div>Account Name</div>
                     <div>Account Number</div>
                     <div>Email Address</div>
-                    <div>Transfer Amount</div>
+                    <div className='text-center'>Transfer Amount</div>
                 </div>
 
                 {/* Rows */}
@@ -146,7 +152,7 @@ const DoctorRequestsPage = () => {
                         <div className="text-gray-600">{doctor.bankInfo.accountName}</div>
                         <div className="text-gray-600">{doctor.bankInfo.accountNumber}</div>
                         <div className="text-gray-600">{doctor.email}</div>
-                        <div className="text-gray-600">{doctor.transferAmount}</div>
+                        <div className="text-gray-600 text-center">${doctor.transferAmount}</div>
                     </CustomCard>
                 ))}
             </div>
@@ -162,4 +168,4 @@ const DoctorRequestsPage = () => {
     );
 };
 
-export default DoctorRequestsPage;
+export default FundTransfer;

@@ -14,12 +14,14 @@ const BookingDetails = ({ open, onClose, appointmentDetails }) => {
         visitingTime,
         appointmentFee,
         status,
+        refundStatus,
         visitReason,
         detailsInfo,
         bankInfo,
         doctorName,
         doctorSpecialist,
         doctorHospital,
+        transferAmount,
     } = appointmentDetails;
 
     return (
@@ -68,7 +70,7 @@ const BookingDetails = ({ open, onClose, appointmentDetails }) => {
                     {/* Appointment Details */}
                     <div>
                         <p className="text-sm font-semibold text-gray-700 mb-1">Appointment Fee</p>
-                        <p className="text-base text-gray-800">{appointmentFee}</p>
+                        <p className="text-base text-gray-800">${appointmentFee ?? transferAmount}</p>
                     </div>
                     <div>
                         <p className="text-sm font-semibold text-gray-700 mb-1">Visiting Date</p>
@@ -79,17 +81,32 @@ const BookingDetails = ({ open, onClose, appointmentDetails }) => {
                         <p className="text-base text-gray-800">{visitingTime}</p>
                     </div>
                     <div>
-                        <p className="text-sm font-semibold text-gray-700 mb-1">Status</p>
+                        <p className="text-sm font-semibold text-gray-700 mb-1">Booking Status</p>
                         <p
                             className={`text-sm px-1 w-20 text-center rounded-full border
                                 ${status === 'Completed'
                                     ? 'text-green-700 bg-green-100 border-green-300'
                                     : status === 'Pending'
                                         ? 'text-yellow-700 bg-yellow-100 border-yellow-300'
-                                        : 'text-red-700 bg-red-100 border-red-300'
+                                        : status === 'Canceled' ? 'text-red-700 bg-red-100 border-red-300'
+                                            : 'text-gray-700 bg-gray-100 border-gray-300'
                                 }`}
                         >
                             {status}
+                        </p>
+
+                    </div>
+                    <div>
+                        <p className="text-sm font-semibold text-gray-700 mb-1">Refund Status</p>
+                        <p
+                            className={`text-sm px-1 w-20 text-center 
+                                ${refundStatus === 'Refunded' ? 'text-green-700 bg-green-100 rounded-full border border-green-300'
+                                    : refundStatus === 'Approved' ? 'text-sky-700 bg-sky-100 rounded-full border border-sky-300'
+                                        : refundStatus === 'Pending' ? 'text-yellow-700 bg-yellow-100 rounded-full border border-yellow-300' 
+                                        : ''
+                                }`}
+                        >
+                            {refundStatus ?? '-'}
                         </p>
 
                     </div>

@@ -22,6 +22,7 @@ import LoginPage from '../pages/auth/LoginPage';
 import ForgotPasswordPage from '../pages/auth/ForgotPasswordPage';
 import OtpPage from '../pages/auth/OtpPage';
 import ResetPasswordPage from '../pages/auth/ResetPasswordPage';
+import ProtectedRoute from './ProtectedRoute';
 import DoctorAllAppointments from '../pages/doctor-manage/DoctorAllAppointments';
 
 const router = createBrowserRouter([
@@ -43,7 +44,7 @@ const router = createBrowserRouter([
   },
   {
     path: '/',
-    element: <App />,
+    element: <ProtectedRoute><App /></ProtectedRoute>,
     children: [
       {
         path: '/',

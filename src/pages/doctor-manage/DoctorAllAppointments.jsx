@@ -42,6 +42,7 @@ const dummyPatients = [
         visitReason: 'Nail Treatment',
         appointmentFee: '12.00',
         status: 'Completed',
+        
         detailsInfo: 'Detail Info the majority have suffered alteration in some form, by injected humour, or randomised words which dont look even slightly believable.',
         bankInfo: {
             bankName: 'Bank of America',
@@ -62,6 +63,7 @@ const dummyPatients = [
         visitReason: 'Nail Treatment',
         appointmentFee: '12.00',
         status: 'Canceled',
+        refundStatus: 'Refunded',
         detailsInfo: 'Detail Info the majority have suffered alteration in some form, by injected humour, or randomised words which dont look even slightly believable.',
         bankInfo: {
             bankName: 'HSBC',
@@ -122,6 +124,7 @@ const dummyPatients = [
         visitReason: 'Consultation',
         appointmentFee: '20.00',
         status: 'Canceled',
+        refundStatus: 'Approved',
         detailsInfo: 'Some details about Charlie Brown.',
         bankInfo: {
             bankName: 'BNP Paribas',
@@ -232,7 +235,7 @@ const DoctorAllAppointments = () => {
 
                         <div className="text-gray-600">{patient.visitSpecialties}</div>
                         <div className="text-gray-600">{patient.visitReason}</div>
-                        <div className="text-gray-600">{patient.appointmentFee}</div>
+                        <div className="text-gray-600">${patient.appointmentFee}</div>
                         <div className={`text-sm px-1 text-center border w-20 rounded-full ${patient.status === "Completed"
                             ? "text-green-700 bg-green-100 border-green-300"
                             : "text-red-700 bg-red-100 border-red-300"

@@ -1,15 +1,23 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Form, Input, Checkbox } from 'antd';
 import CustomButton from '../../components/shared/Button';
 import CustomInput from '../../components/shared/Input';
 import WeCureLogo from '../../assets/logo.png'
+import toast from '../../utils/toast';
 
 const LoginPage = () => {
     const [form] = Form.useForm();
+    const navigate = useNavigate();
 
     const onFinish = (values) => {
-        console.log('Received values of form: ', values);
+        if (values.email === 'wecureadmin@yopmail.com' && values.password === '123456') {
+            localStorage.setItem('authToken', 'dummy-auth-token');
+            toast.success('Login Successful!');
+            navigate('/');
+        } else {
+            toast.error('Invalid credentials!');
+        }
     };
 
     return (

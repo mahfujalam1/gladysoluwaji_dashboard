@@ -3,6 +3,7 @@ import { Link, useLocation } from "react-router-dom";
 import { sidebarLinks } from "./sidebarData";
 import "./Sidebar.css";
 import { LuChevronDown, LuChevronUp } from "react-icons/lu";
+import Logo from '../assets/logo.png'
 
 const Sidebar = () => {
   const { pathname } = useLocation();
@@ -27,8 +28,9 @@ const Sidebar = () => {
       <div className="sidebar rounded-xl shadow-xs p-6">
 
         {/* LOGO */}
-        <div className="pb-6">
-          <h1 className="font-bold text-2xl text-center text-[#006C93]">WeCure Health</h1>
+        <div className="pb-4">
+          <img src={Logo} alt="Logo" />
+          {/* <h1 className="font-bold text-2xl text-center text-[#006C93]">WeCure Health</h1> */}
         </div>
 
         {/* MENU */}
