@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import Loader from '../../components/shared/Loader';
+import { Skeleton } from 'antd';
 import CustomCard from '../../components/common/CustomCard';
 import { FiChevronRight, FiLogOut } from 'react-icons/fi';
 import { useNavigate } from 'react-router-dom';
@@ -34,11 +34,20 @@ const ProfilePage = () => {
     };
 
     return (
-        <Loader size="large" spinning={isLoading} tip="Loading profile...">
-            <div className=''>
-                <h1 className="text-2xl font-bold mb-4">Profile</h1>
+        <div className=''>
+            <h1 className="text-2xl font-bold mb-4">Profile</h1>
 
-                <CustomCard className="p-8 w-full max-w-md">
+            <CustomCard className="p-8 w-full max-w-md">
+                {isLoading ? (
+                    <div className="relative">
+                        <Skeleton.Avatar active size={96} style={{ marginBottom: '1rem' }} />
+                        <Skeleton.Button active style={{ width: '', marginLeft: '14rem' }} />
+                        <Skeleton.Input active style={{ width: '200px', marginBottom: '1rem' }} />
+                        <Skeleton.Input active style={{ width: '250px', marginBottom: '2.5rem' }} />
+                        <Skeleton.Input block active style={{ marginBottom: '1rem' }} />
+                        <Skeleton.Input block active />
+                    </div>
+                ) : (
                     <div className="relative">
 
                         {/* Edit Button */}
@@ -72,9 +81,9 @@ const ProfilePage = () => {
 
                         </div>
                     </div>
-                </CustomCard>
-            </div>
-        </Loader>
+                )}
+            </CustomCard>
+        </div>
     );
 };
 

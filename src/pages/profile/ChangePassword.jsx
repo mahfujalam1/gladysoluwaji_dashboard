@@ -1,7 +1,7 @@
-import React from 'react';
-import CustomCard from '../../components/common/CustomCard';
-import { Input, Form } from 'antd';
+import React, { useState, useEffect } from 'react';
+import { Input, Form, Skeleton, Space } from 'antd';
 import CustomButton from '../../components/shared/Button';
+import CustomCard from '../../components/common/CustomCard';
 import toast from '../../utils/toast';
 import { IoIosArrowBack } from 'react-icons/io';
 import { useNavigate } from 'react-router-dom';
@@ -9,6 +9,14 @@ import { useNavigate } from 'react-router-dom';
 const ChangePasswordPage = () => {
     const navigate = useNavigate();
     const [form] = Form.useForm();
+    const [isLoading, setIsLoading] = useState(true);
+
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            setIsLoading(false);
+        }, 1000);
+        return () => clearTimeout(timer);
+    }, []);
 
     const handleSubmit = (values) => {
         toast.success("Password updated successfully!");
@@ -29,54 +37,63 @@ const ChangePasswordPage = () => {
             </h1>
 
             <CustomCard className="p-8 w-full max-w-md">
-                <div className="">
+                {isLoading ? (
+                    <Space direction="vertical" size="large" style={{ width: '100%', gap: '45px' }}>
+                        <Skeleton.Input active block />
+                        <Skeleton.Input active block />
+                        <Skeleton.Input active block />
+                        <Skeleton.Button active block />
+                    </Space>
+                ) : (
+                    <div className="">
 
-                    {/* Form */}
-                    <Form form={form} layout="vertical" onFinish={handleSubmit}>
+                        {/* Form */}
+                        <Form form={form} layout="vertical" onFinish={handleSubmit}>
 
-                        <Form.Item
-                            label="Current Password"
-                            name="currentPassword"
-                            rules={[{ required: true, message: "Enter current password" }]}
-                        >
-                            <Input.Password placeholder="Enter current password" />
-                        </Form.Item>
+                            <Form.Item
+                                label="Current Password"
+                                name="currentPassword"
+                                rules={[{ required: true, message: "Enter current password" }]}
+                            >
+                                <Input.Password placeholder="Enter current password" />
+                            </Form.Item>
 
-                        <Form.Item
-                            label="New Password"
-                            name="newPassword"
-                            rules={[{ required: true, message: "Enter new password" }]}
-                        >
-                            <Input.Password placeholder="Enter new password" />
-                        </Form.Item>
+                            <Form.Item
+                                label="New Password"
+                                name="newPassword"
+                                rules={[{ required: true, message: "Enter new password" }]}
+                            >
+                                <Input.Password placeholder="Enter new password" />
+                            </Form.Item>
 
-                        <Form.Item
-                            label="Confirm Password"
-                            name="confirmPassword"
-                            dependencies={["newPassword"]}
-                            rules={[
-                                { required: true, message: "Confirm new password" },
-                                ({ getFieldValue }) => ({
-                                    validator(_, value) {
-                                        if (!value || getFieldValue("newPassword") === value) {
-                                            return Promise.resolve();
-                                        }
-                                        return Promise.reject("Passwords do not match");
-                                    },
-                                }),
-                            ]}
-                        >
-                            <Input.Password placeholder="Confirm new password" />
-                        </Form.Item>
+                            <Form.Item
+                                label="Confirm Password"
+                                name="confirmPassword"
+                                dependencies={["newPassword"]}
+                                rules={[
+                                    { required: true, message: "Confirm new password" },
+                                    ({ getFieldValue }) => ({
+                                        validator(_, value) {
+                                            if (!value || getFieldValue("newPassword") === value) {
+                                                return Promise.resolve();
+                                            }
+                                            return Promise.reject("Passwords do not match");
+                                        },
+                                    }),
+                                ]}
+                            >
+                                <Input.Password placeholder="Confirm new password" />
+                            </Form.Item>
 
-                        <CustomButton
-                            htmlType="submit"
-                            className="w-full py-4! text-sm!"
-                        >
-                            Update Password
-                        </CustomButton>
-                    </Form>
-                </div>
+                            <CustomButton
+                                htmlType="submit"
+                                className="w-full py-4! text-sm!"
+                            >
+                                Update Password
+                            </CustomButton>
+                        </Form>
+                    </div>
+                )}
             </CustomCard>
         </div>
     );

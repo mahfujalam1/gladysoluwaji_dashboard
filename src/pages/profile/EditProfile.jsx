@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import CustomCard from '../../components/common/CustomCard';
-import { Button, Input, Form } from 'antd';
+import { Button, Input, Form, Skeleton, Space } from 'antd';
 import { FaCamera } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 import { IoIosArrowBack } from 'react-icons/io';
@@ -11,6 +11,14 @@ const EditProfile = () => {
     const navigate = useNavigate();
     const [form] = Form.useForm();
     const [preview, setPreview] = useState('');
+    const [isLoading, setIsLoading] = useState(true);
+
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            setIsLoading(false);
+        }, 1000);
+        return () => clearTimeout(timer);
+    }, []);
 
     // Initial Data
     const profileData = {
@@ -47,77 +55,93 @@ const EditProfile = () => {
             </h1>
 
             <CustomCard className="p-8 w-full max-w-md">
-                <div>
-
-                    {/* Profile Image */}
-                    <div className="flex items-center gap-4 mb-6">
-                        <ProfileImage
-                            src={preview}
-                            className="w-24 h-24"
-                        />
-
-                        <label className="cursor-pointer flex items-center gap-2 text-sm text-[#005877] font-medium">
-                            <FaCamera size={18} />
-                            Edit Photo
-                            <input
-                                type="file"
-                                accept="image/*"
-                                hidden
-                                onChange={handleImageChange}
-                            />
-                        </label>
+                {isLoading ? (
+                    <div>
+                        <div className="flex items-center gap-4 mb-6">
+                            <Skeleton.Avatar active size={96} />
+                            <Skeleton.Input active style={{ width: '100px' }} />
+                        </div>
+                        <Space direction="vertical" size="large" style={{ width: '100%', gap: '45px' }}>
+                            <Skeleton.Input active block />
+                            <Skeleton.Input active block />
+                            <Skeleton.Input active block />
+                            <Skeleton.Input active block />
+                            <Skeleton.Button active block />
+                        </Space>
                     </div>
+                ) : (
+                    <div>
 
-                    {/* Form */}
-                    <Form
-                        form={form}
-                        layout="vertical"
-                        initialValues={profileData}
-                        onFinish={handleSubmit}
-                    >
-                        <Form.Item
-                            label="First Name"
-                            name="firstName"
-                            rules={[{ required: true, message: "Enter first name" }]}
-                        >
-                            <Input placeholder="First name" />
-                        </Form.Item>
+                        {/* Profile Image */}
+                        <div className="flex items-center gap-4 mb-6">
+                            <ProfileImage
+                                src={preview}
+                                className="w-24 h-24"
+                            />
 
-                        <Form.Item
-                            label="Last Name"
-                            name="lastName"
-                            rules={[{ required: true, message: "Enter last name" }]}
-                        >
-                            <Input placeholder="Last name" />
-                        </Form.Item>
+                            <label className="cursor-pointer flex items-center gap-2 text-sm text-[#005877] font-medium">
+                                <FaCamera size={18} />
+                                Edit Photo
+                                <input
+                                    type="file"
+                                    accept="image/*"
+                                    hidden
+                                    onChange={handleImageChange}
+                                />
+                            </label>
+                        </div>
 
-                        <Form.Item
-                            label="Email"
-                            name="email"
-                            rules={[
-                                { required: true, message: "Enter email" },
-                                { type: "email", message: "Enter valid email" }
-                            ]}
+                        {/* Form */}
+                        <Form
+                            form={form}
+                            layout="vertical"
+                            initialValues={profileData}
+                            onFinish={handleSubmit}
                         >
-                            <Input placeholder="Email" />
-                        </Form.Item>
+                            <Form.Item
+                                label="First Name"
+                                name="firstName"
+                                rules={[{ required: true, message: "Enter first name" }]}
+                            >
+                                <Input placeholder="First name" />
+                            </Form.Item>
 
-                        <Form.Item
-                            label="Phone"
-                            name="phone"
-                            rules={[{ required: true, message: "Enter phone number" }]}
-                        >
-                            <Input placeholder="Phone" />
-                        </Form.Item>
+                            <Form.Item
+                                label="Last Name"
+                                name="lastName"
+                                rules={[{ required: true, message: "Enter last name" }]}
+                            >
+                                <Input placeholder="Last name" />
+                            </Form.Item>
 
-                        <Button
-                            htmlType="submit"
-                            className="w-full bg-[#005877]! text-white! py-4! text-sm!"
-                        >
-                            Save Changes
-                        </Button>
-                    </Form>
-                </div>
+                            <Form.Item
+                                label="Email"
+                                name="email"
+                                rules={[
+                                    { required: true, message: "Enter email" },
+                                    { type: "email", message: "Enter valid email" }
+                                ]}
+                            >
+                                <Input placeholder="Email" />
+                            </Form.Item>
+
+                            <Form.Item
+                                label="Phone"
+                                name="phone"
+                                rules={[{ required: true, message: "Enter phone number" }]}
+                            >
+                                <Input placeholder="Phone" />
+                            </Form.Item>
+
+                            <Button
+                                htmlType="submit"
+                                className="w-full bg-[#005877]! text-white! py-4! text-sm!"
+                            >
+                                Save Changes
+                            </Button>
+                        </Form>
+                    </div>
+                )}
             </CustomCard>
         </div>
     );

@@ -63,7 +63,7 @@ const dummyPatients = [
         visitReason: 'Nail Treatment',
         appointmentFee: '12.00',
         status: 'Canceled',
-        refundStatus: 'Refunded',
+        refundStatus: 'Approved',
         detailsInfo: 'Detail Info the majority have suffered alteration in some form, by injected humour, or randomised words which dont look even slightly believable.',
         bankInfo: {
             bankName: 'HSBC',
@@ -124,7 +124,7 @@ const dummyPatients = [
         visitReason: 'Consultation',
         appointmentFee: '20.00',
         status: 'Canceled',
-        refundStatus: 'Approved',
+        refundStatus: 'Refunded',
         detailsInfo: 'Some details about Charlie Brown.',
         bankInfo: {
             bankName: 'BNP Paribas',
