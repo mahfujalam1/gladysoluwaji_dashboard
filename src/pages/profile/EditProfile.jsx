@@ -24,7 +24,7 @@ const EditProfile = () => {
     const profileData = {
         firstName: "Faris",
         lastName: "Shafi",
-        email: "rayyan6352@mail.com",
+        email: "farisshafi6352@mail.com",
         phone: "0123456789",
     };
 

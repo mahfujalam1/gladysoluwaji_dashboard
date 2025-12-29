@@ -21,9 +21,9 @@ const ProfilePage = () => {
     // Data
     const profileData = {
         name: "Faris Shafi",
-        email: "rayyan6352@mail.com",
+        email: "farisshafi6352@mail.com",
         phone: "0123456789",
-        address: "Abu Dhabi, AB Road",
+        address: "Abu Dhabi, AB Road 402",
         avatar: "https://placehold.net/avatar.svg",
     };
 
