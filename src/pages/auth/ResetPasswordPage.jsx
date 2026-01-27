@@ -1,21 +1,33 @@
-import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useEffect } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { Form, Input } from 'antd';
 import CustomButton from '../../components/shared/Button';
 import toast from '../../utils/toast';
+import { useResetPasswordMutation } from '../../RTK/auth/authApi';
 
 const ResetPasswordPage = () => {
     const navigate = useNavigate();
+    const location = useLocation();
+    const { resetToken } = location.state || {};
     const [form] = Form.useForm();
+    const [resetPassword, { isLoading }] = useResetPasswordMutation();
 
-    const onFinish = (values) => {
-        // Handle password reset logic
-        toast.success("Password reset successfully!");
-        console.log('New password:', values.password);
-        // On success, navigate to the login page
-        setTimeout(() => {
+    useEffect(() => {
+        if (!resetToken) {
+            toast.error("Invalid session. Please verify your OTP again.");
+            navigate('/forgot-password');
+        }
+    }, [resetToken, navigate]);
+
+    const onFinish = async (values) => {
+        try {
+            const { password } = values;
+            await resetPassword({ resetToken, newPassword: password }).unwrap();
+            toast.success("Password reset successfully!");
             navigate('/login');
-        }, 1500);
+        } catch (error) {
+            toast.error(error?.data?.message || "Failed to reset password. Please try again.");
+        }
     };
 
     return (
@@ -45,8 +57,8 @@ const ResetPasswordPage = () => {
                                 message: 'Please input your new Password!',
                             },
                             {
-                                min: 6,
-                                message: 'Password must be at least 6 characters long',
+                                min: 8,
+                                message: 'Password must be at least 8 characters long',
                             },
                         ]}
                         hasFeedback
@@ -78,8 +90,8 @@ const ResetPasswordPage = () => {
                     </Form.Item>
 
                     <Form.Item>
-                        <CustomButton type="primary" htmlType="submit" className="w-full py-3!">
-                            Reset Password
+                        <CustomButton type="primary" htmlType="submit" className="w-full py-3!" loading={isLoading} disabled={isLoading}>
+                            {isLoading ? "Resetting..." : "Reset Password"}
                         </CustomButton>
                     </Form.Item>
                 </Form>

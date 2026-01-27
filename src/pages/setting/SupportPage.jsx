@@ -7,45 +7,14 @@ import CustomButton from '../../components/shared/Button';
 import { FaEye } from 'react-icons/fa';
 import toast from '../../utils/toast';
 import Loader from '../../components/shared/Loader';
+import { useGetContactSupportQuery, useDeleteContactSupportMutation } from '../../RTK/contact/contactSupport';
 
 const SupportPage = () => {
-    const [supportRequests, setSupportRequests] = useState([
-        {
-            id: 1,
-            name: 'Tiago Felipe',
-            email: 'tiagofelipe@mail.com',
-            reportContent:
-                'Full report content for Tiago Felipe - Request 1. This could be a much longer text detailing the support request issue and resolution.',
-            date: '21 Nov 2025',
-        },
-        {
-            id: 2,
-            name: 'Tiago Felipe',
-            email: 'tiagofelipe@mail.com',
-            reportContent:
-                'Full report content for Tiago Felipe - Request 2. Another detailed support request.',
-            date: '21 Nov 2025',
-        },
-        {
-            id: 3,
-            name: 'Tiago Felipe',
-            email: 'tiagofelipe@mail.com',
-            reportContent:
-                'Full report content for Tiago Felipe - Request 3. Yet another support request.',
-            date: '21 Nov 2025',
-        },
-    ]);
+    const { data, isLoading, isFetching } = useGetContactSupportQuery();
+    const [deleteContactSupport, { isLoading: isDeleting }] = useDeleteContactSupportMutation();
 
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [selectedData, setSelectedData] = useState(null);
-    const [isLoading, setIsLoading] = useState(true);
-
-    useEffect(() => {
-        const timer = setTimeout(() => {
-            setIsLoading(false);
-        }, 1000);
-        return () => clearTimeout(timer);
-    }, []);
 
     const openModal = (request) => {
         setSelectedData(request);
@@ -57,13 +26,17 @@ const SupportPage = () => {
         setSelectedData(null);
     };
 
-    const handleDelete = (id) => {
-        toast.success("Support request deleted successfully!");
-        setSupportRequests(prev => prev.filter(request => request.id !== id));
+    const handleDelete = async (id) => {
+        try {
+            await deleteContactSupport(id).unwrap();
+            toast.success("Support request deleted successfully!");
+        } catch (error) {
+            toast.error(error?.data?.message || "Failed to delete request.");
+        }
     };
 
     return (
-        <Loader size="large" spinning={isLoading} tip="Loading...">
+        <Loader size="large" spinning={isLoading || isFetching || isDeleting} tip="Loading...">
             <div>
                 <h1 className="text-2xl font-bold mb-6">Help & Support</h1>
 
@@ -76,20 +49,19 @@ const SupportPage = () => {
                         <div className="text-center">Action</div>
                     </div>
 
-                    {supportRequests.map((request) => (
+                    {data?.data?.map((request) => (
                         <CustomCard
-                            key={request.id}
+                            key={request._id}
                             className="grid grid-cols-5 items-center gap-8 py-6 px-8 hover:shadow-md transition-all duration-300"
-
                         >
-                            <div className="font-medium">{request.name}</div>
+                            <div className="font-medium">{request?.name}</div>
                             <div className="text-gray-600">{request.email}</div>
 
                             <div className="text-gray-600 truncate max-w-[250px]">
-                                {request.reportContent}
+                                {request.message}
                             </div>
 
-                            <div className="text-gray-600">{request.date}</div>
+                            <div className="text-gray-600">{new Date(request.createdAt).toLocaleDateString()}</div>
 
                             <div className="flex justify-center items-center space-x-4">
 
@@ -105,7 +77,7 @@ const SupportPage = () => {
                                 {/* DELETE BUTTON */}
                                 <CustomPopconfirm
                                     title="Are you sure to delete this request?"
-                                    onConfirm={() => handleDelete(request.id)}
+                                    onConfirm={() => handleDelete(request._id)}
                                     okText="Yes"
                                     cancelText="No"
                                 >
@@ -118,6 +90,9 @@ const SupportPage = () => {
                             </div>
                         </CustomCard>
                     ))}
+                    {!isLoading && (!data?.data || data?.data?.length === 0) && (
+                        <div className="text-center text-gray-500 py-10">No support requests found.</div>
+                    )}
                 </div>
 
                 {/* MODAL */}
@@ -140,7 +115,7 @@ const SupportPage = () => {
                             <h1 className="text-xl font-semibold mb-1">{selectedData.name}</h1>
                             <h2 className="text-gray-600 mb-3">{selectedData.email}</h2>
                             <p className="text-gray-700 leading-relaxed">
-                                {selectedData.reportContent}
+                                {selectedData.message}
                             </p>
                         </div>
                     )}

@@ -5,18 +5,35 @@ import CustomButton from '../../components/shared/Button';
 import CustomInput from '../../components/shared/Input';
 import WeCureLogo from '../../assets/logo.png'
 import toast from '../../utils/toast';
+import { useLoginMutation } from '../../RTK/auth/authApi';
 
 const LoginPage = () => {
     const [form] = Form.useForm();
     const navigate = useNavigate();
+    const [login, { isLoading }] = useLoginMutation();
 
-    const onFinish = (values) => {
-        if (values.email === 'wecureadmin@yopmail.com' && values.password === '123456') {
-            localStorage.setItem('authToken', 'dummy-auth-token');
-            toast.success('Login Successful!');
-            navigate('/');
-        } else {
-            toast.error('Invalid credentials!');
+    const onFinish = async (values) => {
+        try {
+            const { email, password } = values;
+            const userData = await login({ email, password }).unwrap();
+
+            if (userData?.data?.role === 'ADMIN') {
+                const token = userData?.data?.token || userData?.token || userData?.data?.accessToken;
+                if (token) {
+                    localStorage.setItem('authToken', token);
+                    toast.success('Login Successful!');
+                    navigate('/');
+                } else {
+                    toast.error('Login failed: Token missing.');
+                }
+            }
+            else {
+                toast.error('You are not authorized to access this page.');
+                localStorage.removeItem('authToken');
+            }
+
+        } catch (err) {
+            toast.error(err.data?.message || 'Invalid credentials!');
         }
     };
 
@@ -34,8 +51,8 @@ const LoginPage = () => {
                     name="login"
                     initialValues={{
                         remember: false,
-                        email: 'wecureadmin@yopmail.com',
-                        password: '123456',
+                        email: 'uno61@yopmail.com',
+                        password: 'securepass',
                     }}
                     onFinish={onFinish}
                     layout="vertical"
@@ -85,7 +102,7 @@ const LoginPage = () => {
                     </Form.Item>
 
                     <Form.Item>
-                        <CustomButton type="primary" htmlType="submit" className="w-full py-3! text-lg!">
+                        <CustomButton type="primary" htmlType="submit" className="w-full py-3! text-lg!" loading={isLoading}>
                             Login
                         </CustomButton>
                     </Form.Item>

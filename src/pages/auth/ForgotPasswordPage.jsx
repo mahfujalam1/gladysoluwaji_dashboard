@@ -4,18 +4,23 @@ import { Form } from 'antd';
 import CustomButton from '../../components/shared/Button';
 import toast from '../../utils/toast';
 import CustomInput from '../../components/shared/Input';
+import { useForgotPasswordMutation } from '../../RTK/auth/authApi';
 
 const ForgotPasswordPage = () => {
     const navigate = useNavigate();
     const [form] = Form.useForm();
+    const [forgotPassword, { isLoading }] = useForgotPasswordMutation();
 
-    const onFinish = (values) => {
-        // Handle password reset logic
-        toast.success("OTP sent to your email!");
-        console.log('Password reset requested for:', values.email);
-        setTimeout(() => {
-            navigate('/otp');
-        }, 1500);
+    const onFinish = async (values) => {
+        try {
+            const { email } = values;
+            await forgotPassword(email).unwrap();
+            toast.success("OTP sent to your email!");
+            // console.log('Password reset requested for:', email);
+            navigate('/otp', { state: { email } });
+        } catch (error) {
+            toast.error(error?.data?.message || "Failed to send OTP. Please try again.");
+        }
     };
 
     return (
@@ -53,8 +58,8 @@ const ForgotPasswordPage = () => {
                     </Form.Item>
 
                     <Form.Item>
-                        <CustomButton type="primary" htmlType="submit" className="w-full py-3!">
-                            GET OTP
+                        <CustomButton type="primary" htmlType="submit" className="w-full py-3!" loading={isLoading} disabled={isLoading}>
+                            {isLoading ? "Sending..." : "GET OTP"}
                         </CustomButton>
                     </Form.Item>
                 </Form>

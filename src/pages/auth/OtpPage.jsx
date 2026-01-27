@@ -1,27 +1,45 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { Form, Input } from 'antd';
 import toast from '../../utils/toast';
 import CustomButton from '../../components/shared/Button';
+import { useVerifyOtpMutation, useForgotPasswordMutation } from '../../RTK/auth/authApi';
 
 const OtpPage = () => {
     const navigate = useNavigate();
+    const location = useLocation();
+    const { email } = location.state || {};
     const [form] = Form.useForm();
+    const [verifyOtp, { isLoading }] = useVerifyOtpMutation();
+    const [resendOtp, { isLoading: isResending }] = useForgotPasswordMutation();
 
-    const onFinish = (values) => {
-        // Handle OTP verification logic
-        toast.success("OTP verified successfully!");
-        console.log('OTP submitted:', values.otp);
-        // On success, navigate to the reset password page
-        setTimeout(() => {
-            navigate('/reset-password');
-        }, 1500);
+    const onFinish = async (values) => {
+        try {
+            const { otp } = values;
+            const response = await verifyOtp({ email, otp }).unwrap();
+            // Assuming the token is in response.data.resetToken or response.resetToken. 
+            // Adjust based on actual API response. 
+            // Based on typical patterns and the user request, we need this token for the next step.
+            const resetToken = response?.data?.resetToken || response?.resetToken || response?.token;
+
+            toast.success("OTP verified successfully!");
+            navigate('/reset-password', { state: { resetToken } });
+        } catch (error) {
+            toast.error(error?.data?.message || "Invalid OTP. Please try again.");
+        }
     };
 
-    const handleResend = () => {
-        // Handle resend OTP logic
-        toast.success("OTP resent to your email successfully!");
-        console.log('Resend OTP requested');
+    const handleResend = async () => {
+        if (!email) {
+            toast.error("Email not found. Please try again from the start.");
+            return;
+        }
+        try {
+            await resendOtp(email).unwrap();
+            toast.success("OTP resent to your email successfully!");
+        } catch (error) {
+            toast.error(error?.data?.message || "Failed to resend OTP.");
+        }
     };
 
     return (
@@ -37,9 +55,6 @@ const OtpPage = () => {
                     name="otp_verification"
                     onFinish={onFinish}
                     className='justify-items-center'
-                    initialValues={{
-                        otp: '651',
-                    }}
                 >
                     <Form.Item
                         name="otp"
@@ -61,16 +76,16 @@ const OtpPage = () => {
                     </Form.Item>
 
                     <Form.Item className='w-full'>
-                        <CustomButton type="primary" htmlType="submit" className="w-full py-3!">
-                            Verify
+                        <CustomButton type="primary" htmlType="submit" className="w-full py-3!" loading={isLoading} disabled={isLoading}>
+                            {isLoading ? "Verifying..." : "Verify"}
                         </CustomButton>
                     </Form.Item>
                 </Form>
                 <div className="text-center mt-6">
                     <p className="text-sm text-gray-600">
                         Didn't receive the code?{' '}
-                        <button onClick={handleResend} className="text-[#006C93] hover:underline cursor-pointer">
-                            Resend OTP
+                        <button onClick={handleResend} disabled={isResending} className="text-[#006C93] hover:underline cursor-pointer disabled:opacity-50">
+                            {isResending ? "Resending..." : "Resend OTP"}
                         </button>
                     </p>
                 </div>

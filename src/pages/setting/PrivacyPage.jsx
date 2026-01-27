@@ -1,40 +1,45 @@
 import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import CustomJoditEditor from '../../components/common/JoditEditor';
 import CustomCard from '../../components/common/CustomCard';
 import CustomButton from '../../components/shared/Button';
 import toast from '../../utils/toast';
 import Loader from '../../components/shared/Loader';
+import { useGetPrivacyQuery, useUpdatePrivacyMutation } from '../../RTK/privacy/privacyApi';
 
 const PrivacyPage = () => {
-    const [privacyContent, setPrivacyContent] = useState(`
-    <ul>
-      <li>You Can Cancel Or Reschedule A Job Before The Cutoff Time Shown In The App.</li>
-      <li>Refund Eligibility Depends On Timing Of Cancellation And Local Policy.</li>
-      <li>If A Driver Is Already En Route Or Job Is In Progress, Refund May Be Partial Or UnavAilable.</li>
-    </ul>
-  `);
+    const { data, isLoading, isFetching } = useGetPrivacyQuery();
+    const [privacyContent, setPrivacyContent] = useState('');
+
+    useEffect(() => {
+        if (data?.data?.content) {
+            setPrivacyContent(data.data.content);
+        }
+    }, [data]);
+
+    const navigate = useNavigate();
+    const [updatePrivacy, { isLoading: isUpdating }] = useUpdatePrivacyMutation();
 
     const handleContentChange = (newContent) => {
         setPrivacyContent(newContent);
     };
 
-    const [isLoading, setIsLoading] = useState(true);
-
-    useEffect(() => {
-        const timer = setTimeout(() => {
-            setIsLoading(false);
-        }, 1000);
-        return () => clearTimeout(timer);
-    }, []);
-
-    const handleUpdate = () => {
-        console.log("Updated Privacy & Policy Content:", privacyContent);
-        // Here you would typically send the content to a backend
-        toast.success("Privacy & Policy content updated!");
+    const handleUpdate = async () => {
+        try {
+            await updatePrivacy({ type: 'privacy_policy', content: privacyContent }).unwrap();
+            toast.success("Privacy & Policy content updated!");
+        } catch (error) {
+            if (error?.status === 401) {
+                toast.error("Session expired. Please login again.");
+                navigate('/login');
+            } else {
+                toast.error(error?.data?.message || "Failed to update content.");
+            }
+        }
     };
 
     return (
-        <Loader size="large" spinning={isLoading} tip="Loading...">
+        <Loader size="large" spinning={isLoading || isFetching} tip="Loading...">
             <div>
                 <h1 className="text-2xl font-bold mb-4">Privacy & Policy</h1>
                 <CustomCard>
@@ -48,8 +53,10 @@ const PrivacyPage = () => {
                                 onClick={handleUpdate}
                                 type="primary"
                                 className="p-5! text-xl!"
+                                loading={isUpdating}
+                                disabled={isUpdating}
                             >
-                                Update
+                                {isUpdating ? 'Updating...' : 'Update'}
                             </CustomButton>
                         </div>
                     </div>
