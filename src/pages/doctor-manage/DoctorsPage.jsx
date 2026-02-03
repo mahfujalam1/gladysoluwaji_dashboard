@@ -323,6 +323,7 @@ const DoctorsPage = () => {
 
             <div className='flex justify-end mt-6'>
                 <CustomPagination
+                    showSizeChanger={false}
                     total={Doctors.length}
                     pageSize={doctorsPerPage}
                     onChange={handlePageChange}

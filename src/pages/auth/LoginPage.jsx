@@ -17,7 +17,7 @@ const LoginPage = () => {
             const { email, password } = values;
             const userData = await login({ email, password }).unwrap();
 
-            if (userData?.data?.role === 'ADMIN') {
+            if (userData?.data?.role === 'ADMIN' || userData?.data?.role === 'SUPER_ADMIN') {
                 const token = userData?.data?.token || userData?.token || userData?.data?.accessToken;
                 if (token) {
                     localStorage.setItem('authToken', token);

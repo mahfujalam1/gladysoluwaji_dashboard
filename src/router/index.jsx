@@ -11,7 +11,7 @@ import DoctorsPage from '../pages/doctor-manage/DoctorsPage';
 import PatientsPage from '../pages/patient-manage/PatientsPage';
 import AdminsPage from '../pages/admin/AdminsPage';
 import WellnessTipsPage from '../pages/wellness-tips/WellnessTipsPage';
-import SubscriptionPage from '../pages/subscription/SubscriptionPage';
+// import SubscriptionPage from '../pages/subscription/SubscriptionPage';
 import SupportPage from '../pages/setting/SupportPage';
 import TermsPage from '../pages/setting/TermsPage';
 import PrivacyPage from '../pages/setting/PrivacyPage';
@@ -24,6 +24,7 @@ import OtpPage from '../pages/auth/OtpPage';
 import ResetPasswordPage from '../pages/auth/ResetPasswordPage';
 import ProtectedRoute from './ProtectedRoute';
 import DoctorAllAppointments from '../pages/doctor-manage/DoctorAllAppointments';
+import AuditLog from '../pages/audit/AuditLog';
 
 const router = createBrowserRouter([
   {
@@ -91,8 +92,8 @@ const router = createBrowserRouter([
         element: <WellnessTipsPage />,
       },
       {
-        path: '/subscription',
-        element: <SubscriptionPage />,
+        path: '/audit-log',
+        element: <AuditLog />,
       },
       {
         path: '/support',

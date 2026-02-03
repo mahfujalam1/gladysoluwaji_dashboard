@@ -3,15 +3,20 @@ import { Modal, Form } from 'antd';
 import CustomButton from '../../../components/shared/Button';
 import CustomInput from '../../../components/shared/Input';
 
-const AddAdmin = ({ visible, onCancel, onAdd }) => {
+const AddAdmin = ({ visible, onCancel, onAdd, loading }) => {
   const [form] = Form.useForm();
+
+  // Reset form when modal becomes visible
+  React.useEffect(() => {
+    if (visible) {
+      form.resetFields();
+    }
+  }, [visible, form]);
 
   const handleOk = () => {
     form.validateFields()
       .then(values => {
-        form.resetFields();
         onAdd(values); // Call onAdd with the form values
-        onCancel();
       })
       .catch(info => {
         console.log('Validate Failed:', info);
@@ -24,25 +29,18 @@ const AddAdmin = ({ visible, onCancel, onAdd }) => {
       open={visible}
       onCancel={onCancel}
       footer={[
-        <CustomButton key="submit" type="primary" onClick={handleOk}>
+        <CustomButton key="submit" type="primary" onClick={handleOk} loading={loading}>
           Submit
         </CustomButton>,
       ]}
     >
       <Form form={form} layout="vertical" name="add_admin_form">
         <Form.Item
-          name="firstName"
-          label="First Name"
-          rules={[{ required: true, message: 'Please input the first name!' }]}
+          name="name"
+          label="Name"
+          rules={[{ required: true, message: 'Please input the name!' }]}
         >
-          <CustomInput placeholder="First Name" />
-        </Form.Item>
-        <Form.Item
-          name="lastName"
-          label="Last Name"
-          rules={[{ required: true, message: 'Please input the last name!' }]}
-        >
-          <CustomInput placeholder="Last Name" />
+          <CustomInput placeholder="Name" />
         </Form.Item>
         <Form.Item
           name="email"
@@ -61,6 +59,7 @@ const AddAdmin = ({ visible, onCancel, onAdd }) => {
         <Form.Item
           name="password"
           label="Password"
+          minLength={8}
           rules={[{ required: true, message: 'Please input the password!' }]}
         >
           <CustomInput type="password" placeholder="Password" />

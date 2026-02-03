@@ -50,11 +50,11 @@ export const sidebarLinks = [
     path: "/wellness-tips",
     icon: <LuHeartPulse />,
   },
-  // {
-  //   label: "Subscription Plan",
-  //   path: "/subscription",
-  //   icon: <LuFileText />,
-  // },
+  {
+    label: "Audit Log",
+    path: "/audit-log",
+    icon: <LuFileText />,
+  },
   {
     label: "Settings",
     path: "/settings",

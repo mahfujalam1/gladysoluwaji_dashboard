@@ -8,7 +8,7 @@ const CustomPagination = ({ total, current, pageSize, onChange, showSizeChanger 
       current={current}
       pageSize={pageSize}
       onChange={onChange}
-      // showSizeChanger={showSizeChanger}
+      showSizeChanger={showSizeChanger}
       showTotal={(total, range) => `${range[0]}-${range[1]} of ${total} items`}
     />
   );

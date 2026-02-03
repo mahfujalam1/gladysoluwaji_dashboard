@@ -312,6 +312,7 @@ const AppointmentsPage = () => {
             {/* Pagination */}
             <div className="flex justify-end mt-6">
                 <CustomPagination
+                    showSizeChanger={false}
                     total={filteredPatients.length}
                     pageSize={patientsPerPage}
                     current={currentPage}

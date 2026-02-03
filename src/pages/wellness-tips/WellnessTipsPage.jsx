@@ -189,6 +189,7 @@ const WellnessTipsPage = () => {
                     )}
                     {tips.length > 0 && (
                         <CustomPagination
+                            showSizeChanger={false}
                             total={tips.length}
                             pageSize={tipsPerPage}
                             onChange={handlePageChange}
