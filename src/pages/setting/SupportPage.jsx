@@ -8,6 +8,7 @@ import { FaEye } from 'react-icons/fa';
 import toast from '../../utils/toast';
 import Loader from '../../components/shared/Loader';
 import { useGetContactSupportQuery, useDeleteContactSupportMutation } from '../../RTK/contact/contactSupport';
+import CustomPagination from '../../components/shared/Pagination';
 
 const SupportPage = () => {
     const { data, isLoading, isFetching } = useGetContactSupportQuery();
@@ -90,6 +91,17 @@ const SupportPage = () => {
                             </div>
                         </CustomCard>
                     ))}
+                    <CustomPagination
+                        current={data?.page}
+                        total={data?.total}
+                        pageSize={data?.limit}
+                        onChange={(page) => {
+                            navigate(`/support?page=${page}`);
+                        }}
+                        showSizeChanger={false}
+                        showQuickJumper={false}
+                        showTotal={(total, range) => `${range[0]}-${range[1]} of ${total} items`}
+                    />
                     {!isLoading && (!data?.data || data?.data?.length === 0) && (
                         <div className="text-center text-gray-500 py-10">No support requests found.</div>
                     )}

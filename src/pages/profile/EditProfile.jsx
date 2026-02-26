@@ -5,7 +5,7 @@ import { FaCamera } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 import { IoIosArrowBack } from 'react-icons/io';
 import toast from '../../utils/toast';
-import ProfileImage from '../../components/common/ProfileImage';
+import { useGetProfileQuery, useUpdateProfileMutation } from '../../RTK/profile/profileApi';
 
 const EditProfile = () => {
     const navigate = useNavigate();
@@ -13,33 +13,48 @@ const EditProfile = () => {
     const [preview, setPreview] = useState('');
     const [isLoading, setIsLoading] = useState(true);
 
-    useEffect(() => {
-        const timer = setTimeout(() => {
-            setIsLoading(false);
-        }, 1000);
-        return () => clearTimeout(timer);
-    }, []);
+    const { data: profileData, isLoading: profileLoading, error: profileError } = useGetProfileQuery();
+    const [updateProfile] = useUpdateProfileMutation();
 
-    // Initial Data
-    const profileData = {
-        firstName: "Faris",
-        lastName: "Shafi",
-        email: "farisshafi6352@mail.com",
-        phone: "0123456789",
-    };
+
+    useEffect(() => {
+        if (profileData?.data) {
+            form.setFieldsValue({
+                name: profileData.data.name,
+                phone: profileData.data.phone,
+            });
+            setPreview(profileData.data.profileImage || 'https://placehold.net/avatar.svg');
+        }
+    }, [profileData, form]);
+
+
+    const [selectedFile, setSelectedFile] = useState(null);
 
     const handleImageChange = (e) => {
         const file = e.target.files[0];
         if (file) {
+            setSelectedFile(file);
             setPreview(URL.createObjectURL(file));
         }
     };
 
-    const handleSubmit = (values) => {
-        toast.success("Profile updated successfully!");
-        console.log("Updated Profile Data:", values);
+    const handleSubmit = async (values) => {
+        const formData = new FormData();
+        formData.append('name', values.name);
+        formData.append('phone', values.phone);
+        if (selectedFile) {
+            formData.append('profileImage', selectedFile);
+        }
 
+        try {
+            await updateProfile(formData).unwrap();
+            toast.success("Profile updated successfully!");
+            navigate('/profile');
+        } catch (error) {
+            toast.error(error?.data?.message || "Failed to update profile");
+        }
     };
+
 
     return (
         <div>
@@ -55,18 +70,24 @@ const EditProfile = () => {
             </h1>
 
             <CustomCard className="p-8 w-full max-w-md">
-                {isLoading ? (
+                {profileLoading ? (
                     <div>
                         <div className="flex items-center gap-4 mb-6">
-                            <Skeleton.Avatar active size={96} />
-                            <Skeleton.Input active style={{ width: '100px' }} />
+                            <Skeleton.Avatar active size={96} shape="circle" />
+                            <div className="flex flex-col gap-2">
+                                <Skeleton.Button active size="small" style={{ width: 100 }} />
+                            </div>
                         </div>
-                        <Space direction="vertical" size="large" style={{ width: '100%', gap: '45px' }}>
-                            <Skeleton.Input active block />
-                            <Skeleton.Input active block />
-                            <Skeleton.Input active block />
-                            <Skeleton.Input active block />
-                            <Skeleton.Button active block />
+                        <Space direction="vertical" size="large" style={{ width: '100%', gap: '20px' }}>
+                            <div>
+                                <div className="mb-2"><Skeleton.Input active size="small" style={{ width: 60 }} /></div>
+                                <Skeleton.Input active block size="large" />
+                            </div>
+                            <div>
+                                <div className="mb-2"><Skeleton.Input active size="small" style={{ width: 60 }} /></div>
+                                <Skeleton.Input active block size="large" />
+                            </div>
+                            <Skeleton.Button active block size="large" style={{ height: 48 }} />
                         </Space>
                     </div>
                 ) : (
@@ -74,9 +95,10 @@ const EditProfile = () => {
 
                         {/* Profile Image */}
                         <div className="flex items-center gap-4 mb-6">
-                            <ProfileImage
+                            <img
                                 src={preview}
-                                className="w-24 h-24"
+                                className="w-24 h-24 rounded-full object-cover"
+                                alt="Profile"
                             />
 
                             <label className="cursor-pointer flex items-center gap-2 text-sm text-[#005877] font-medium">
@@ -99,30 +121,11 @@ const EditProfile = () => {
                             onFinish={handleSubmit}
                         >
                             <Form.Item
-                                label="First Name"
-                                name="firstName"
-                                rules={[{ required: true, message: "Enter first name" }]}
+                                label="Name"
+                                name="name"
+                                rules={[{ required: true, message: "Enter name" }]}
                             >
-                                <Input placeholder="First name" />
-                            </Form.Item>
-
-                            <Form.Item
-                                label="Last Name"
-                                name="lastName"
-                                rules={[{ required: true, message: "Enter last name" }]}
-                            >
-                                <Input placeholder="Last name" />
-                            </Form.Item>
-
-                            <Form.Item
-                                label="Email"
-                                name="email"
-                                rules={[
-                                    { required: true, message: "Enter email" },
-                                    { type: "email", message: "Enter valid email" }
-                                ]}
-                            >
-                                <Input placeholder="Email" />
+                                <Input placeholder="Name" />
                             </Form.Item>
 
                             <Form.Item

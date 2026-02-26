@@ -6,136 +6,12 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import BookingDetailsModal from './modal/BookingDetailsModal';
 import { IoIosArrowBack } from 'react-icons/io';
 import CustomPagination from '../../components/shared/Pagination';
+import { useGetDoctorAppointmentsQuery, useGetDoctorBookingDetailsByIdQuery } from '../../RTK/doctor/doctorApi';
+import Loader from '../../components/shared/Loader';
 
-
-const dummyPatients = [
-    {
-        id: '1',
-        patientName: 'Taigo Felipe',
-        avatar: 'https://placehold.net/avatar.svg?text=TF&bg=212121',
-        contactNumber: '+234 54564 5565',
-        email: 'tiagofelipe@email.com',
-        bookingDate: '2 Nov 2025',
-        visitingDate: '21 Sep 2025',
-        visitingTime: '12:00 PM',
-        visitSpecialties: 'Dermatologist',
-        visitReason: 'Nail Treatment',
-        appointmentFee: '12.00',
-        status: 'Completed',
-        detailsInfo: 'Detail Info the majority have suffered alteration in some form, by injected humour, or randomised words which dont look even slightly believable.',
-        bankInfo: {
-            bankName: 'First Bank Of Nigeria',
-            accountName: 'Taigo Felipe',
-            accountNumber: '2345678901',
-        },
-    },
-    {
-        id: '2',
-        patientName: 'Jane Doe',
-        avatar: 'https://placehold.net/avatar.svg?text=JD&bg=212121',
-        contactNumber: '+1 555 123 4567',
-        email: 'janedoe@email.com',
-        bookingDate: '2 Nov 2025',
-        visitingDate: '21 Sep 2025',
-        visitingTime: '12:00 PM',
-        visitSpecialties: 'Dermatologist',
-        visitReason: 'Nail Treatment',
-        appointmentFee: '12.00',
-        status: 'Completed',
-        
-        detailsInfo: 'Detail Info the majority have suffered alteration in some form, by injected humour, or randomised words which dont look even slightly believable.',
-        bankInfo: {
-            bankName: 'Bank of America',
-            accountName: 'Jane Doe',
-            accountNumber: '1234567890',
-        },
-    },
-    {
-        id: '3',
-        patientName: 'John Smith',
-        avatar: 'https://placehold.net/avatar.svg?text=JS&bg=212121',
-        contactNumber: '+44 20 7946 0958',
-        email: 'johnsmith@email.com',
-        bookingDate: '2 Nov 2025',
-        visitingDate: '21 Sep 2025',
-        visitingTime: '12:00 PM',
-        visitSpecialties: 'Dermatologist',
-        visitReason: 'Nail Treatment',
-        appointmentFee: '12.00',
-        status: 'Canceled',
-        refundStatus: 'Approved',
-        detailsInfo: 'Detail Info the majority have suffered alteration in some form, by injected humour, or randomised words which dont look even slightly believable.',
-        bankInfo: {
-            bankName: 'HSBC',
-            accountName: 'John Smith',
-            accountNumber: '9876543210',
-        },
-    },
-    {
-        id: '4',
-        patientName: 'Alice Johnson',
-        avatar: 'https://placehold.net/avatar.svg?text=AJ&bg=212121',
-        contactNumber: '+1 555 111 2222',
-        email: 'alice.j@email.com',
-        bookingDate: '3 Nov 2025',
-        visitingDate: '22 Sep 2025',
-        visitingTime: '01:00 PM',
-        visitSpecialties: 'Cardiologist',
-        visitReason: 'Check-up',
-        appointmentFee: '15.00',
-        status: 'Completed',
-        detailsInfo: 'Some details about Alice Johnson.',
-        bankInfo: {
-            bankName: 'Wells Fargo',
-            accountName: 'Alice Johnson',
-            accountNumber: '1234567891',
-        },
-    },
-    {
-        id: '5',
-        patientName: 'Bob Williams',
-        avatar: 'https://placehold.net/avatar.svg?text=BW&bg=212121',
-        contactNumber: '+49 176 12345678',
-        email: 'bob.w@email.com',
-        bookingDate: '4 Nov 2025',
-        visitingDate: '23 Sep 2025',
-        visitingTime: '02:00 PM',
-        visitSpecialties: 'Pediatrician',
-        visitReason: 'Vaccination',
-        appointmentFee: '10.00',
-        status: 'Completed',
-        detailsInfo: 'Some details about Bob Williams.',
-        bankInfo: {
-            bankName: 'Deutsche Bank',
-            accountName: 'Bob Williams',
-            accountNumber: '9876543211',
-        },
-    },
-    {
-        id: '6',
-        patientName: 'Charlie Brown',
-        avatar: 'https://placehold.net/avatar.svg?text=CB&bg=212121',
-        contactNumber: '+33 6 12345678',
-        email: 'charlie.b@email.com',
-        bookingDate: '5 Nov 2025',
-        visitingDate: '24 Sep 2025',
-        visitingTime: '03:00 PM',
-        visitSpecialties: 'Oncologist',
-        visitReason: 'Consultation',
-        appointmentFee: '20.00',
-        status: 'Canceled',
-        refundStatus: 'Refunded',
-        detailsInfo: 'Some details about Charlie Brown.',
-        bankInfo: {
-            bankName: 'BNP Paribas',
-            accountName: 'Charlie Brown',
-            accountNumber: '1122334456',
-        },
-    },
-];
 
 const DoctorAllAppointments = () => {
-    const [patients, setPatients] = useState(dummyPatients);
+    const [patients, setPatients] = useState([]);
     const [selectedPatient, setSelectedPatient] = useState(null);
     const [isModalVisible, setIsModalVisible] = useState(false);
     const [selectedFilter, setSelectedFilter] = useState('All');
@@ -143,10 +19,41 @@ const DoctorAllAppointments = () => {
     const [currentPage, setCurrentPage] = useState(1);
     const [patientsPerPage] = useState(10);
 
+    const { state } = useLocation();
+    const navigate = useNavigate();
+    const { doctorId } = state || {};
+
+    const { data: appointmentsData, isLoading, error } = useGetDoctorAppointmentsQuery(doctorId, {
+        skip: !doctorId
+    });
+
+    React.useEffect(() => {
+        if (appointmentsData?.data) {
+            const mappedPatients = appointmentsData.data.map(appointment => ({
+                id: appointment._id,
+                patientName: appointment.patientName,
+                avatar: appointment.patientProfileImage || 'https://placehold.net/avatar.svg',
+                contactNumber: appointment.patientPhone,
+                visitingTime: appointment.appointmentTime,
+                visitReason: appointment.reasonTitle,
+                // Using consultationFee as requested, fallback gracefully if undefined
+                appointmentFee: appointment.consultationFee || '0.00',
+                status: appointment.status === 'CANCELLED' ? 'Canceled' :
+                    appointment.status === 'COMPLETED' ? 'Completed' :
+                        appointment.status, // Normalize status string casing if needed
+                bookingDate: appointment.appointmentDate ? new Date(appointment.appointmentDate).toLocaleDateString() : 'N/A',
+                // Add other fields if available or necessary for modal
+                ...appointment
+            }));
+            setPatients(mappedPatients);
+        }
+    }, [appointmentsData]);
+
+
     const filterOptions = [
         { value: 'All', label: 'All' },
-        { value: 'Completed', label: 'Completed' },
-        { value: 'Canceled', label: 'Canceled' },
+        { value: 'COMPLETED', label: 'Completed' },
+        { value: 'CANCELLED', label: 'Canceled' },
     ];
 
     const handleFilterChange = (value) => {
@@ -154,8 +61,7 @@ const DoctorAllAppointments = () => {
         setSelectedFilter(value);
     };
 
-    const { state } = useLocation();
-    const navigate = useNavigate();
+
 
 
     const showModal = (patient) => {
@@ -208,9 +114,9 @@ const DoctorAllAppointments = () => {
 
             <div className="grid grid-cols-1 gap-3">
                 {/* Header */}
-                <div className="grid grid-cols-7 gap-10 text-gray-500 font-semibold mb-2 px-8">
+                <div className="grid grid-cols-6 gap-10 text-gray-500 font-semibold mb-2 px-8">
                     <div>Patient</div>
-                    <div>Visit Specialties</div>
+                    {/* <div>Visit Specialties</div> */}
                     <div>Visit reason</div>
                     <div>Fee</div>
                     <div>Status</div>
@@ -219,43 +125,53 @@ const DoctorAllAppointments = () => {
                 </div>
 
                 {/* Rows */}
-                {currentPatients.map((patient) => (
-                    <CustomCard
-                        key={patient.id}
-                        className="grid grid-cols-7 items-center gap-10 py-4 px-8 hover:shadow-md transition-all duration-300"
-                    >
-                        <div className="flex items-center gap-3">
-                            <img
-                                src={patient.avatar}
-                                alt="avatar"
-                                className="w-10 h-10 rounded-full"
-                            />
-                            <div className="font-medium">{patient.patientName}</div>
-                        </div>
+                {isLoading ? (
+                    <div className="flex justify-center items-center py-20">
+                        <Loader spinning={isLoading} />
+                    </div>
+                ) : (
+                    currentPatients.length > 0 ? (
+                        currentPatients.map((patient) => (
+                            <CustomCard
+                                key={patient.id}
+                                className="grid grid-cols-6 items-center gap-10 py-4 px-8 hover:shadow-md transition-all duration-300"
+                            >
+                                <div className="flex items-center gap-3">
+                                    <img
+                                        src={patient.avatar}
+                                        alt="avatar"
+                                        className="w-10 h-10 rounded-full object-cover"
+                                    />
+                                    <div className="font-medium">{patient.patientName}</div>
+                                </div>
 
-                        <div className="text-gray-600">{patient.visitSpecialties}</div>
-                        <div className="text-gray-600">{patient.visitReason}</div>
-                        <div className="text-gray-600">${patient.appointmentFee}</div>
-                        <div className={`text-sm px-1 text-center border w-20 rounded-full ${patient.status === "Completed"
-                            ? "text-green-700 bg-green-100 border-green-300"
-                            : "text-red-700 bg-red-100 border-red-300"
-                            }`}>{patient.status}</div>
-                        <div className="text-gray-600">{patient.bookingDate}</div>
+                                <div className="text-gray-600">{patient.visitReason}</div>
+                                <div className="text-gray-600">${patient.appointmentFee}</div>
+                                <div className={`text-sm px-1 text-center border w-22 rounded-full ${patient.status === "COMPLETED"
+                                    ? "text-green-700 bg-green-100 border-green-300"
+                                    : "text-red-700 bg-red-100 border-red-300"
+                                    }`}>{patient.status}</div>
+                                <div className="text-gray-600">{patient.bookingDate}</div>
 
-                        <div
-                            className="flex justify-center items-center gap-3"
-                            onClick={(e) => e.stopPropagation()}
-                        >
-                            <FaEye title='Booking Details'
-                                size={22}
-                                className="text-[#0087b8] cursor-pointer hover:text-[#006e96]"
-                                onClick={() => showModal(patient)}
-                            />
-                        </div>
+                                <div
+                                    className="flex justify-center items-center gap-3"
+                                    onClick={(e) => e.stopPropagation()}
+                                >
+                                    <FaEye title='Booking Details'
+                                        size={22}
+                                        className="text-[#0087b8] cursor-pointer hover:text-[#006e96]"
+                                        onClick={() => showModal(patient)}
+                                    />
+                                </div>
 
-                    </CustomCard>
-                ))}
+                            </CustomCard>
+                        ))
+                    ) : (
+                        <div className="text-center py-10 text-gray-500">No appointments found.</div>
+                    )
+                )}
             </div>
+
 
             <div className='flex justify-end mt-6'>
                 <CustomPagination

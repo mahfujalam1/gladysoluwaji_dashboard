@@ -51,8 +51,8 @@ const LoginPage = () => {
                     name="login"
                     initialValues={{
                         remember: false,
-                        email: 'uno61@yopmail.com',
-                        password: 'securepass',
+                        email: 'uno.super@yopmail.com',
+                        password: '12345678',
                     }}
                     onFinish={onFinish}
                     layout="vertical"

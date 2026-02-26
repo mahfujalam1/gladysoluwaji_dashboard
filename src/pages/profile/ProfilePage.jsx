@@ -4,28 +4,14 @@ import CustomCard from '../../components/common/CustomCard';
 import { FiChevronRight, FiLogOut } from 'react-icons/fi';
 import { useNavigate } from 'react-router-dom';
 import { FaRegEdit } from 'react-icons/fa';
-import ProfileImage from '../../components/common/ProfileImage';
 import toast from '../../utils/toast';
+import { useGetProfileQuery } from '../../RTK/profile/profileApi';
 
 const ProfilePage = () => {
+    const { data: profileData, isLoading: profileLoading, error: profileError } = useGetProfileQuery();
     const navigate = useNavigate();
-    const [isLoading, setIsLoading] = useState(true);
 
-    useEffect(() => {
-        const timer = setTimeout(() => {
-            setIsLoading(false);
-        }, 1000);
-        return () => clearTimeout(timer);
-    }, []);
-
-    // Data
-    const profileData = {
-        name: "Faris Shafi",
-        email: "farisshafi6352@mail.com",
-        phone: "0123456789",
-        address: "Abu Dhabi, AB Road 402",
-        avatar: "https://placehold.net/avatar.svg",
-    };
+    const user = profileData?.data || profileData || {};
 
     const handleLogout = () => {
         localStorage.removeItem('authToken');
@@ -38,14 +24,21 @@ const ProfilePage = () => {
             <h1 className="text-2xl font-bold mb-4">Profile</h1>
 
             <CustomCard className="p-8 w-full max-w-md">
-                {isLoading ? (
-                    <div className="relative">
-                        <Skeleton.Avatar active size={96} style={{ marginBottom: '1rem' }} />
-                        <Skeleton.Button active style={{ width: '', marginLeft: '14rem' }} />
-                        <Skeleton.Input active style={{ width: '200px', marginBottom: '1rem' }} />
-                        <Skeleton.Input active style={{ width: '250px', marginBottom: '2.5rem' }} />
-                        <Skeleton.Input block active style={{ marginBottom: '1rem' }} />
-                        <Skeleton.Input block active />
+                {profileLoading ? (
+                    <div className="flex flex-col items-start">
+                        <div className="mb-4">
+                            <Skeleton.Avatar active size={96} shape="circle" />
+                        </div>
+                        <div className="space-y-2 mb-8 w-full">
+                            <Skeleton.Input active size="default" style={{ width: 200, height: 28 }} />
+                            <Skeleton.Input active size="small" style={{ width: 250 }} />
+                            <Skeleton.Input active size="small" style={{ width: 150 }} />
+                        </div>
+
+                        <div className="w-full space-y-4 mt-2">
+                            <Skeleton.Button active block style={{ height: 56, borderRadius: 12 }} />
+                            <Skeleton.Button active block style={{ height: 56, borderRadius: 12 }} />
+                        </div>
                     </div>
                 ) : (
                     <div className="relative">
@@ -57,12 +50,15 @@ const ProfilePage = () => {
 
                         {/* Avatar + Name + Email */}
                         <div>
-                            <ProfileImage
-                                className="w-24 h-24 mb-4"
+                            <img
+                                className="w-24 h-24 mb-4 rounded-full object-cover"
+                                src={user?.profileImage || 'https://placehold.net/avatar.svg'}
+                                alt={user?.name || 'Profile'}
                             />
                             <div>
-                                <h2 className="text-lg font-bold">{profileData.name}</h2>
-                                <p className="text-gray-500 text-sm">{profileData.email}</p>
+                                <h2 className="text-lg font-bold">{user?.name || 'N/A'}</h2>
+                                <p className="text-gray-500 text-sm">{user?.email || 'N/A'}</p>
+                                <p className="text-gray-500 text-sm">{user?.phone || 'N/A'}</p>
                             </div>
                         </div>
 

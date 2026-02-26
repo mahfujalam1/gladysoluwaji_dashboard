@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Modal, Tag } from 'antd';
-import CustomButton from '../../../components/shared/Button';
+// import CustomButton from '../../../components/shared/Button';
 
 const PatientDetailsModal = ({ open, onClose, patient }) => {
     if (!patient) {
@@ -34,7 +34,7 @@ const PatientDetailsModal = ({ open, onClose, patient }) => {
             <div className="p-6">
                 {/* Top Section */}
                 <div className="flex items-center mb-8">
-                    <img src={patient.avatar} alt={patient.name} className="w-24 h-24 rounded-full mr-6" />
+                    <img src={patient.avatar} alt={patient.name} className="w-24 h-24 rounded-full object-cover mr-6" />
                     <div>
                         <div
                             onClick={handleCopy}
@@ -76,13 +76,13 @@ const PatientDetailsModal = ({ open, onClose, patient }) => {
                         <h4 className="text-lg font-semibold mb-2">Bank Information</h4>
                         <div className="grid grid-cols-2 gap-y-1">
                             <p className="font-semibold text-gray-600">Bank Name :</p>
-                            <p className="text-gray-800">{patient.bankInfo.bankName}</p>
+                            <p className="text-gray-800">{patient?.bankName || 'N/A'}</p>
 
                             <p className="font-semibold text-gray-600">Account Name :</p>
-                            <p className="text-gray-800">{patient.bankInfo.accountName}</p>
+                            <p className="text-gray-800">{patient?.accountName || 'N/A'}</p>
 
                             <p className="font-semibold text-gray-600">Account Number :</p>
-                            <p className="text-gray-800">{patient.bankInfo.accountNumber}</p>
+                            <p className="text-gray-800">{patient?.accountNumber || 'N/A'}</p>
                         </div>
                     </div>
                 </div>

@@ -102,7 +102,7 @@ const AuditLog = () => {
                             </CustomCard>
                         ))
                     ) : (
-                        <div className="text-center py-20 text-gray-500 font-medium">
+                        <div className="text-center py-20 text-gray-500">
                             No logs found for the selected criteria.
                         </div>
                     )

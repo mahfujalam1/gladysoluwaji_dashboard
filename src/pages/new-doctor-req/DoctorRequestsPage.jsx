@@ -1,101 +1,56 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import CustomCard from '../../components/common/CustomCard';
-import image1 from '../../assets/_n.jpg'
-import image2 from '../../assets/n.jpg'
 import { useNavigate } from 'react-router-dom';
 import CustomPagination from '../../components/shared/Pagination';
-
-const dummyDoctors = [
-    {
-        id: '1',
-        name: 'Taigo Felipe',
-        Specialties: 'Dentist',
-        avatar: 'https://placehold.net/avatar.svg?text=TF&bg=212121',
-        doctorContact: '+234 54564 5565',
-        email: 'tiagofelipe@email.com',
-        requestDate: '2 Nov 2025',
-        doctorId: '6415966589',
-        hospital: 'Central Dental Care',
-        documents: [{ ImageUrl: image1 }, { ImageUrl: image2, }, { ImageUrl: image2, }, { ImageUrl: image2, }, { ImageUrl: image2, }, { ImageUrl: image2, }],
-    },
-    {
-        id: '2',
-        name: 'Jane Doe',
-        Specialties: 'Dentist',
-        avatar: 'https://placehold.net/avatar.svg?text=JD&bg=212121',
-        doctorContact: '+1 555 123 4567',
-        email: 'janedoe@email.com',
-        requestDate: '2 Nov 2025',
-        doctorId: '6565841589',
-        hospital: 'Central Dental Care',
-        documents: [{ ImageUrl: image2 }, { ImageUrl: image2, }, { ImageUrl: image2, }],
-    },
-    {
-        id: '3',
-        name: 'John Smith',
-        Specialties: 'Dentist',
-        avatar: 'https://placehold.net/avatar.svg?text=JS&bg=212121',
-        doctorContact: '+44 20 7946 0958',
-        email: 'johnsmith@email.com',
-        requestDate: '1 Nov 2025',
-        doctorId: '6565966589',
-        hospital: 'Central Dental Care',
-        documents: [{ ImageUrl: image1 }, { ImageUrl: image2 }, { ImageUrl: image2, }, { ImageUrl: image2, }, { ImageUrl: image2, }],
-    },
-    {
-        id: '4',
-        name: 'Emily Jones',
-        Specialties: 'Dentist',
-        avatar: 'https://placehold.net/avatar.svg?text=EJ&bg=212121',
-        doctorContact: '+61 2 9876 5432',
-        email: 'emilyjones@email.com',
-        requestDate: '31 Oct 2025',
-        doctorId: '6565964589',
-        hospital: 'Central Dental Care',
-        documents: [{ ImageUrl: image2 }, { ImageUrl: image2, }],
-    },
-    {
-        id: '5',
-        name: 'Michael Brown',
-        Specialties: 'Cardiologist',
-        avatar: 'https://placehold.net/avatar.svg?text=MB&bg=212121',
-        doctorContact: '+1 555 987 6543',
-        email: 'michael.brown@email.com',
-        requestDate: '30 Oct 2025',
-        doctorId: '9876543210',
-        hospital: 'City Heart Clinic',
-        documents: [{ ImageUrl: image1 }],
-    },
-    {
-        id: '6',
-        name: 'Sarah Wilson',
-        Specialties: 'Neurologist',
-        avatar: 'https://placehold.net/avatar.svg?text=SW&bg=212121',
-        doctorContact: '+44 20 1234 5678',
-        email: 'sarah.wilson@email.com',
-        requestDate: '29 Oct 2025',
-        doctorId: '0123456789',
-        hospital: 'General Hospital',
-        documents: [{ ImageUrl: image2 }],
-    },
-
-];
+import { useGetNewDoctorsQuery } from '../../RTK/doctor/newDoctor';
+import Loader from '../../components/shared/Loader';
 
 const DoctorRequestsPage = () => {
-    const [doctors, setDoctors] = useState(dummyDoctors);
     const navigate = useNavigate();
-
     const [currentPage, setCurrentPage] = useState(1);
     const [doctorsPerPage] = useState(10);
+    const [doctorRecords, setDoctorRecords] = useState([]);
 
-    // Get current doctors
-    const indexOfLastDoctor = currentPage * doctorsPerPage;
-    const indexOfFirstDoctor = indexOfLastDoctor - doctorsPerPage;
-    const currentDoctors = doctors.slice(indexOfFirstDoctor, indexOfLastDoctor);
+    const { data: doctorsResponse, isLoading, error } = useGetNewDoctorsQuery({
+        page: currentPage,
+        limit: doctorsPerPage
+    });
+
+    useEffect(() => {
+        const rawData = doctorsResponse?.data?.data || doctorsResponse?.data;
+        if (rawData && Array.isArray(rawData)) {
+            const mappedDoctors = rawData.map((doctor) => ({
+                id: doctor._id,
+                name: doctor.userId?.name || 'N/A',
+                Specialties: doctor.specialtyId?.name || 'N/A',
+                avatar: doctor.userId?.profileImage || 'https://placehold.net/avatar.svg?text=DR&bg=212121',
+                doctorContact: doctor.userId?.phone || 'N/A',
+                email: doctor.userId?.email || 'N/A',
+                requestDate: doctor.createdAt ? new Date(doctor.createdAt).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }) : 'N/A',
+                doctorId: doctor.userId?.doctorId,
+                hospital: doctor.currentOrganization || 'N/A',
+                documents: doctor.verificationDocuments || [],
+                verificationStatus: doctor.verificationStatus,
+                isVerified: doctor.isVerified,
+                totalExperienceYears: doctor.totalExperienceYears
+            }));
+            setDoctorRecords(mappedDoctors);
+        }
+    }, [doctorsResponse]);
 
     const handlePageChange = (page) => {
         setCurrentPage(page);
     };
+
+    if (error) {
+        return (
+            <div className="text-center py-20 text-red-500 font-medium">
+                Error loading doctor requests: {error?.data?.message || 'Something went wrong'}
+            </div>
+        );
+    }
+
+    const paginationMeta = doctorsResponse?.data?.meta || doctorsResponse?.meta;
 
     return (
         <div>
@@ -114,37 +69,52 @@ const DoctorRequestsPage = () => {
                 </div>
 
                 {/* Rows */}
-                {currentDoctors.map((doctor) => (
-                    <CustomCard
-                        key={doctor.id}
-                        onClick={() => navigate("/doctor-requests-details", { state: { doctor } })}
-                        className="grid grid-cols-5 items-center gap-6 py-4 px-8 hover:shadow-md transition-all duration-300 cursor-pointer"
-                    >
-                        <div className="flex items-center gap-3">
-                            <img
-                                src={doctor.avatar}
-                                alt="avatar"
-                                className="w-10 h-10 rounded-full"
-                            />
-                            <div className="font-medium">{doctor.name}</div>
-                        </div>
+                {isLoading ? (
+                    <div className="flex justify-center items-center py-20">
+                        <Loader spinning={isLoading} />
+                    </div>
+                ) : (
+                    doctorRecords.length > 0 ? (
+                        doctorRecords.map((doctor) => (
+                            <CustomCard
+                                key={doctor.id}
+                                onClick={() => navigate("/doctor-requests-details", { state: { doctor } })}
+                                className="grid grid-cols-5 items-center gap-6 py-4 px-8 hover:shadow-md transition-all duration-300 cursor-pointer"
+                            >
+                                <div className="flex items-center gap-3">
+                                    <img
+                                        src={doctor.avatar}
+                                        alt="avatar"
+                                        className="w-10 h-10 rounded-full object-cover shadow-sm bg-gray-50"
+                                    />
+                                    <div className="font-medium truncate" title={doctor.name}>{doctor.name}</div>
+                                </div>
 
-                        <div className="text-gray-600">{doctor.Specialties}</div>
-                        <div className="text-gray-600">{doctor.doctorContact}</div>
-                        <div className="text-gray-600">{doctor.email}</div>
-                        <div className="text-gray-600">{doctor.requestDate}</div>
-                    </CustomCard>
-                ))}
+                                <div className="text-gray-600 truncate" title={doctor.Specialties}>{doctor.Specialties}</div>
+                                <div className="text-gray-600 truncate" title={doctor.doctorContact}>{doctor.doctorContact}</div>
+                                <div className="text-gray-600 truncate" title={doctor.email}>{doctor.email}</div>
+                                <div className="text-gray-600 truncate" title={doctor.requestDate}>{doctor.requestDate}</div>
+                            </CustomCard>
+                        ))
+                    ) : (
+                        <div className="text-center py-20 text-gray-500 font-medium">
+                            No doctor requests found.
+                        </div>
+                    )
+                )}
             </div>
-            <div className='flex justify-end mt-6'>
-                <CustomPagination
-                    showSizeChanger={false}
-                    total={doctors.length}
-                    pageSize={doctorsPerPage}
-                    onChange={handlePageChange}
-                    current={currentPage}
-                />
-            </div>
+
+            {!isLoading && doctorRecords.length > 0 && (
+                <div className='flex justify-end mt-6'>
+                    <CustomPagination
+                        showSizeChanger={false}
+                        total={paginationMeta?.total || 0}
+                        pageSize={paginationMeta?.limit || doctorsPerPage}
+                        onChange={handlePageChange}
+                        current={currentPage}
+                    />
+                </div>
+            )}
         </div>
     );
 };

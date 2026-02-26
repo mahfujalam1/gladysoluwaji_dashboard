@@ -1,32 +1,44 @@
 import React, { useState } from 'react';
 import CustomCard from '../../components/common/CustomCard';
 import { IoIosArrowBack } from 'react-icons/io';
-import { Image, Button } from 'antd';
+import { Image, Button, Popover, Input } from 'antd';
 import { useLocation, useNavigate } from 'react-router-dom';
 import CustomButton from '../../components/shared/Button';
 import CustomPopconfirm from '../../components/shared/Popconfirm';
 import toast from '../../utils/toast';
-
+import { useApproveDoctorMutation, useRejectDoctorMutation } from '../../RTK/doctor/newDoctor';
 
 const DoctorRequestDetails = () => {
     const { state } = useLocation();
     const navigate = useNavigate();
     const { doctor } = state || {};
+    const [rejectNote, setRejectNote] = useState('');
 
-    const handleApprove = (id) => {
-        toast.success("Request approved successfully!");
-        console.log("Approved:", id);
-        // Here you would typically make an API call to approve the request
-        // For now, we'll just navigate back
-        navigate('/doctor-requests');
+    const [approveDoctor] = useApproveDoctorMutation();
+    const [rejectDoctor, { isLoading: isRejecting }] = useRejectDoctorMutation();
+
+    const handleApprove = async (id) => {
+        try {
+            await approveDoctor(id).unwrap();
+            toast.success("Request approved successfully!");
+            navigate('/doctor-requests');
+        } catch (err) {
+            toast.error(err?.data?.message || "Failed to approve request");
+        }
     };
 
-    const handleReject = (id) => {
-        toast.warning("Request rejected!");
-        console.log("Rejected:", id);
-        // Here you would typically make an API call to reject the request
-        // For now, we'll just navigate back
-        navigate('/doctor-requests');
+    const handleReject = async (id) => {
+        if (!rejectNote.trim()) {
+            toast.error("Please provide a reason for rejection");
+            return;
+        }
+        try {
+            await rejectDoctor({ id, note: rejectNote }).unwrap();
+            toast.success("Request rejected successfully!");
+            navigate('/doctor-requests');
+        } catch (err) {
+            toast.error(err?.data?.message || "Failed to reject request");
+        }
     };
 
     if (!doctor) {
@@ -81,7 +93,7 @@ const DoctorRequestDetails = () => {
                             <p className="text-gray-700 mt-1">{Specialties}</p>
                             <p className="text-gray-700">{hospital}</p>
                             {doctorId && <p className="text-gray-700">National ID: {doctorId}</p>}
-                            <p className="text-gray-700 mt-2">{email}</p>
+                            <p className="text-gray-700">{email}</p>
                             <p className="text-gray-700">{doctorContact}</p>
                         </div>
                     </div>
@@ -102,7 +114,7 @@ const DoctorRequestDetails = () => {
                                         documents.map((document, index) => (
                                             <Image
                                                 key={index}
-                                                src={document.ImageUrl}
+                                                src={document}
                                                 alt={`document-${index}`}
                                                 className="w-32! h-32!"
                                             />
@@ -116,14 +128,31 @@ const DoctorRequestDetails = () => {
                     </div>
                 </div>
                 <div className='flex gap-4 justify-end mt-4'>
-                    <CustomPopconfirm
-                        title="Are you sure to Reject this request?"
-                        onConfirm={() => handleReject(doctor.id)}
-                        okText="Yes"
-                        cancelText="No"
+                    <Popover
+                        trigger="click"
+                        content={
+                            <div className="w-64">
+                                <p className="mb-2">Are you sure to Reject this request?</p>
+                                <Input.TextArea
+                                    value={rejectNote}
+                                    onChange={(e) => setRejectNote(e.target.value)}
+                                    className='mt-2!'
+                                    placeholder="Reason for rejection"
+                                    rows={3}
+                                />
+                                <Button
+                                    danger
+                                    loading={isRejecting}
+                                    onClick={() => handleReject(doctor.id)}
+                                    className='mt-3! w-full!'
+                                >
+                                    Confirm Rejection
+                                </Button>
+                            </div>
+                        }
                     >
                         <Button title="Reject Request" danger className='text-xl! py-5! px-5!'>Reject</Button>
-                    </CustomPopconfirm>
+                    </Popover>
 
                     <CustomPopconfirm
                         title="Are you sure to Approve this request?"
@@ -131,7 +160,12 @@ const DoctorRequestDetails = () => {
                         okText="Yes"
                         cancelText="No"
                     >
-                        <CustomButton title="Approve Request" className='text-xl! py-5! px-4! hover:border-[#006C93]!'>Approve</CustomButton>
+                        <CustomButton
+                            title="Approve Request"
+                            className='text-xl! py-5! px-4! hover:border-[#006C93]!'
+                        >
+                            Approve
+                        </CustomButton>
                     </CustomPopconfirm>
                 </div>
             </CustomCard>

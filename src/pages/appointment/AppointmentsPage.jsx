@@ -9,145 +9,51 @@ import { PiArrowCircleUpRightBold } from 'react-icons/pi';
 import { Button } from 'antd';
 import CustomPopconfirm from '../../components/shared/Popconfirm';
 import toast from '../../utils/toast';
-
-export const dummyBooking = [
-    {
-        id: '3',
-        patientName: 'Ahmed Rahman',
-        avatar: 'https://placehold.net/avatar.svg?text=AR&bg=22C55E',
-        contactNumber: '+880 1712 345678',
-        email: 'ahmed.rahman@email.com',
-        bookingDate: '1 Dec 2025',
-        visitingDate: '5 Dec 2025',
-        visitingTime: '03:45 PM',
-        visitSpecialties: 'Orthopedist',
-        visitReason: 'Knee Pain Consultation',
-        appointmentFee: '12.00',
-        status: 'Pending',
-        refundStatus: [],
-        detailsInfo: 'Patient reports chronic knee pain.',
-        bankInfo: {
-            bankName: 'HSBC',
-            accountName: 'Ahmed Rahman',
-            accountNumber: '1122334456',
-        },
-        doctorName: 'Dr. Sarah Connor',
-        doctorSpecialist: 'Orthopedist',
-        doctorHospital: 'Bone & Joint Center',
-    },
-    {
-        id: '1',
-        patientName: 'Taigo Felipe',
-        avatar: 'https://placehold.net/avatar.svg?text=TF&bg=212121',
-        contactNumber: '+234 54564 5565',
-        email: 'tiagofelipe@email.com',
-        bookingDate: '2 Nov 2025',
-        visitingDate: '21 Sep 2025',
-        visitingTime: '12:00 PM',
-        visitSpecialties: 'Dermatologist',
-        visitReason: 'Nail Treatment',
-        appointmentFee: '12.00',
-        status: 'Completed',
-        refundStatus: [],
-        detailsInfo: 'Patient successfully completed nail treatment.',
-        bankInfo: {
-            bankName: 'Bank Of America',
-            accountName: 'Taigo Felipe',
-            accountNumber: '1122334456',
-        },
-        doctorName: 'Dr. Jane Doe',
-        doctorSpecialist: 'Dermatologist',
-        doctorHospital: 'Bone & Joint Center',
-    },
-    {
-        id: '2',
-        patientName: 'Maria Gonzales',
-        avatar: 'https://placehold.net/avatar.svg?text=MG&bg=8B5CF6',
-        contactNumber: '+34 61234 9876',
-        email: 'maria.g@email.com',
-        bookingDate: '15 Oct 2025',
-        visitingDate: '18 Oct 2025',
-        visitingTime: '09:30 AM',
-        visitSpecialties: 'Cardiologist',
-        visitReason: 'Heart Checkup',
-        appointmentFee: '12.00',
-        status: 'Completed',
-        refundStatus: 'Approved',
-        detailsInfo: 'Routine cardiac examination completed.',
-        bankInfo: {
-            bankName: 'City Bank',
-            accountName: 'Maria Gonzales',
-            accountNumber: '1122334456',
-        },
-        doctorName: 'Dr. John Appleseed',
-        doctorSpecialist: 'Cardiologist',
-        doctorHospital: 'Bone & Joint Center',
-    },
-    {
-        id: '4',
-        patientName: 'Emily Watson',
-        avatar: 'https://placehold.net/avatar.svg?text=EW&bg=F97316',
-        contactNumber: '+1 415 998 7766',
-        email: 'emily.watson@email.com',
-        bookingDate: '10 Nov 2025',
-        visitingDate: '12 Nov 2025',
-        visitingTime: '11:15 AM',
-        visitSpecialties: 'Psychiatrist',
-        visitReason: 'Stress & Anxiety Session',
-        appointmentFee: '12.00',
-        status: 'Canceled',
-        refundStatus: 'Pending',
-        detailsInfo: 'Appointment canceled by patient.',
-        bankInfo: {
-            bankName: 'BNP Paribas',
-            accountName: 'Emily Watson',
-            accountNumber: '1122334456',
-        },
-        doctorName: 'Dr. Kyle Reese',
-        doctorSpecialist: 'Psychiatrist',
-        doctorHospital: 'Bone & Joint Center',
-    },
-    {
-        id: '5',
-        patientName: 'Emily Watson',
-        avatar: 'https://placehold.net/avatar.svg?text=EW&bg=F97316',
-        contactNumber: '+1 415 998 7766',
-        email: 'emily.watson@email.com',
-        bookingDate: '10 Nov 2025',
-        visitingDate: '12 Nov 2025',
-        visitingTime: '11:15 AM',
-        visitSpecialties: 'Psychiatrist',
-        visitReason: 'Stress & Anxiety Session',
-        appointmentFee: '12.00',
-        status: 'Canceled',
-        refundStatus: 'Refunded',
-        detailsInfo: 'Appointment canceled by patient.',
-        bankInfo: {
-            bankName: 'BNP Paribas',
-            accountName: 'Emily Watson',
-            accountNumber: '1122334456',
-        },
-        doctorName: 'Dr. Kyle Reese',
-        doctorSpecialist: 'Psychiatrist',
-        doctorHospital: 'Bone & Joint Center',
-    },
-];
+import { useGetAppointmentsQuery } from '../../RTK/appointment/appointmentsApi';
+import Loader from '../../components/shared/Loader';
 
 const AppointmentsPage = () => {
     const navigate = useNavigate();
-    const [patients] = useState(dummyBooking);
+    const [patients, setPatients] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
     const [patientsPerPage] = useState(10);
     const [selectedFilter, setSelectedFilter] = useState('All');
     const [selectedPatient, setSelectedPatient] = useState(null);
     const [isModalVisible, setIsModalVisible] = useState(false);
 
+    const { data: appointmentsData, isLoading, error } = useGetAppointmentsQuery({
+        page: currentPage,
+        limit: patientsPerPage
+    });
+
+    React.useEffect(() => {
+        if (appointmentsData?.data) {
+            const mappedPatients = appointmentsData.data.map(appointment => ({
+                id: appointment._id,
+                patientName: appointment.patientName,
+                avatar: appointment.patientProfileImage || 'https://placehold.net/avatar.svg',
+                email: appointment.patientEmail,
+                visitingTime: appointment.appointmentTime,
+                visitSpecialties: appointment.specialtyName,
+                visitReason: appointment.reasonTitle,
+                appointmentFee: appointment.consultationFee || '0.00',
+                status: appointment.status === 'CANCELLED' ? 'Canceled' :
+                    appointment.status === 'COMPLETED' ? 'Completed' :
+                        appointment.status,
+                bookingDate: appointment.appointmentDate ? new Date(appointment.appointmentDate).toLocaleDateString() : 'N/A',
+                refundStatus: 'N/A',
+                ...appointment
+            }));
+            setPatients(mappedPatients);
+        }
+    }, [appointmentsData]);
+
     const filterOptions = [
         { value: 'All', label: 'All' },
-        { value: 'Completed', label: 'Completed' },
-        { value: 'Pending', label: 'Pending' },
-        { value: 'Canceled', label: 'Canceled' },
-        { value: 'refundRequest', label: 'Refund Request' },
+        { value: 'COMPLETED', label: 'Completed' },
+        { value: 'PENDING', label: 'Pending' },
+        { value: 'CANCELLED', label: 'Canceled' },
+        // { value: 'refundRequest', label: 'Refund Request' },
     ];
 
     const handleFilterChange = (value) => {
@@ -155,30 +61,29 @@ const AppointmentsPage = () => {
         setCurrentPage(1);
     };
 
-    // 🔹 FILTER LOGIC
+    // 🔹 FILTER LOGIC (Client-side for now, as API might not support filter params yet)
     const filteredPatients =
         selectedFilter === 'All'
             ? patients
-            : selectedFilter === 'refundRequest'
-                ? patients.filter(
-                    (patient) => patient.refundStatus === 'Pending'
-                )
-                : patients.filter(
-                    (patient) => patient.status === selectedFilter
-                );
+            : patients.filter(
+                (patient) => patient.status === selectedFilter
+            );
+
 
     // 🔹 PAGINATION LOGIC
-    const indexOfLastPatient = currentPage * patientsPerPage;
-    const indexOfFirstPatient =
-        indexOfLastPatient - patientsPerPage;
-    const currentPatients = filteredPatients.slice(
-        indexOfFirstPatient,
-        indexOfLastPatient
-    );
+    // Since API handles pagination, we use data directly, but if needed we can handle client logic or just use API meta.
+    // However, the current component logic slices `filteredPatients`. If we use API pagination, `patients` only contains current page.
+    // So we should NOT slice if using API pagination.
+    // But since filteredPatients is derived from `patients` (which is 1 page), slicing might be redundant or wrong if we slice 0-10 of 10 items.
+    // Let's rely on API pagination for `patients` and not slice again, unless we filter client side which reduces count.
+
+    // For now, let's assume `filteredPatients` is what we show.
+    const currentPatients = filteredPatients;
 
     const handlePageChange = (page) => {
         setCurrentPage(page);
     };
+
 
     const showModal = (patient) => {
 
@@ -238,82 +143,92 @@ const AppointmentsPage = () => {
                     <div className="text-center">Action</div>
                 </div>
 
-                {currentPatients.map((patient) => (
-                    <CustomCard
-                        key={patient.id}
-                        className="grid grid-cols-7 items-center gap-6 py-4 px-8"
-                    >
-                        <div className="flex gap-3">
-                            <img
-                                src={patient.avatar}
-                                alt="avatar"
-                                className="w-10 h-10 rounded-full"
-                            />
-                            <div>
-                                <div className="font-medium">
-                                    {patient.patientName}
-                                </div>
-                                <div className="text-sm">
-                                    {patient.email}
-                                </div>
-                            </div>
-                        </div>
-
-                        <div className="text-center">
-                            {patient.visitSpecialties}
-                        </div>
-                        <div className="text-center">
-                            {patient.visitReason}
-                        </div>
-                        <div className="text-center">
-                            ${patient.appointmentFee}
-                        </div>
-
-                        <div
-                            className={`text-sm px-1 w-20 text-center rounded-full border
-                                ${patient.status === 'Completed' ? 'text-green-700 bg-green-100 border-green-300'
-                                    : patient.status === 'Pending' ? 'text-yellow-700 bg-yellow-100 border-yellow-300'
-                                        : patient.status === 'Canceled' ? 'text-red-700 bg-red-100 border-red-300'
-                                            : 'text-gray-700 bg-gray-100 border-gray-300'
-                                }`}
-                        >
-                            {patient.status}
-                        </div>
-
-                        <div className="text-center">
-                            {patient.bookingDate}
-                        </div>
-
-                        <div className="flex gap-3 justify-center">
-                            <FaEye
-                                size={24}
-                                title="Booking Details"
-                                className="text-[#0087b8] cursor-pointer hover:text-[#006e96]"
-                                onClick={() => showModal(patient)}
-                            />
-                            {patient.refundStatus === 'Pending' && (
-                                <CustomPopconfirm
-                                    title="Are you sure to Approve this request?"
-                                    onConfirm={() => handleApprove(patient.id)}
-                                    okText="Yes"
-                                    cancelText="No"
-                                >
-                                    <FaRegCheckCircle
-                                        size={22}
-                                        className='text-green-500 cursor-pointer hover:text-green-600'
+                {isLoading ? (
+                    <div className="flex justify-center items-center py-20">
+                        <Loader spinning={isLoading} />
+                    </div>
+                ) : (
+                    currentPatients.length > 0 ? (
+                        currentPatients.map((patient) => (
+                            <CustomCard
+                                key={patient.id}
+                                className="grid grid-cols-7 items-center gap-6 py-4 px-8"
+                            >
+                                <div className="flex gap-3">
+                                    <img
+                                        src={patient.avatar}
+                                        alt="avatar"
+                                        className="w-10 h-10 rounded-full object-cover"
                                     />
-                                </CustomPopconfirm>
-                            )}
-                        </div>
-                    </CustomCard>
-                ))}
+                                    <div>
+                                        <div className="font-medium">
+                                            {patient.patientName}
+                                        </div>
+                                        <div className="text-sm">
+                                            {patient.email}
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div className="text-center">
+                                    {patient.visitSpecialties}
+                                </div>
+                                <div className="text-center">
+                                    {patient.visitReason}
+                                </div>
+                                <div className="text-center">
+                                    ${patient.appointmentFee}
+                                </div>
+
+                                <div
+                                    className={`text-sm px-1 w-22 text-center rounded-full border
+                                        ${patient.status === 'COMPLETED' ? 'text-green-700 bg-green-100 border-green-300'
+                                            : patient.status === 'PENDING' ? 'text-yellow-700 bg-yellow-100 border-yellow-300'
+                                                : patient.status === 'CANCELLED' ? 'text-red-700 bg-red-100 border-red-300'
+                                                    : 'text-gray-700 bg-gray-100 border-gray-300'
+                                        }`}
+                                >
+                                    {patient.status}
+                                </div>
+
+                                <div className="text-center">
+                                    {patient.bookingDate}
+                                </div>
+
+                                <div className="flex gap-3 justify-center">
+                                    <FaEye
+                                        size={24}
+                                        title="Booking Details"
+                                        className="text-[#0087b8] cursor-pointer hover:text-[#006e96]"
+                                        onClick={() => showModal(patient)}
+                                    />
+                                    {patient.refundStatus === 'PENDING' && (
+                                        <CustomPopconfirm
+                                            title="Are you sure to Approve this request?"
+                                            onConfirm={() => handleApprove(patient.id)}
+                                            okText="Yes"
+                                            cancelText="No"
+                                        >
+                                            <FaRegCheckCircle
+                                                size={22}
+                                                className='text-green-500 cursor-pointer hover:text-green-600'
+                                            />
+                                        </CustomPopconfirm>
+                                    )}
+                                </div>
+                            </CustomCard>
+                        ))
+                    ) : (
+                        <div className="text-center py-10 text-gray-500">No appointments found.</div>
+                    )
+                )}
             </div>
 
             {/* Pagination */}
             <div className="flex justify-end mt-6">
                 <CustomPagination
                     showSizeChanger={false}
-                    total={filteredPatients.length}
+                    total={appointmentsData?.meta?.total || 0}
                     pageSize={patientsPerPage}
                     current={currentPage}
                     onChange={handlePageChange}
