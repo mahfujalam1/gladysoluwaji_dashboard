@@ -3,12 +3,15 @@ import { Input } from 'antd';
 
 const { Search } = Input;
 
-const SearchInput = () => {
+const SearchInput = ({ value, onChange, onSearch, placeholder = 'Search', style }) => {
   return (
     <Search
-      placeholder="Search"
-      onSearch={(value) => console.log(value)}
-      style={{ width: 300 }}
+      placeholder={placeholder}
+      value={value}
+      onChange={onChange}
+      onSearch={onSearch}
+      allowClear
+      style={{ width: 300, ...style }}
     />
   );
 };

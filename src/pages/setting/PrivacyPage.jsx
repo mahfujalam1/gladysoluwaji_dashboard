@@ -39,7 +39,7 @@ const PrivacyPage = () => {
     };
 
     return (
-        <Loader size="large" spinning={isLoading || isFetching} tip="Loading...">
+        <Loader spinning={isLoading || isFetching} tip="Loading...">
             <div>
                 <h1 className="text-2xl font-bold mb-4">Privacy & Policy</h1>
                 <CustomCard>

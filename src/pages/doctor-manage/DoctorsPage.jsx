@@ -21,6 +21,7 @@ const DoctorsPage = () => {
     const [isModalVisible, setIsModalVisible] = useState(false);
     const [selectedDoctorId, setSelectedDoctorId] = useState(null);
     const [suspendNote, setSuspendNote] = useState('');
+    const [searchTerm, setSearchTerm] = useState('');
     const [suspendDoctor] = useSuspendDoctorMutation();
     const [unsuspendDoctor] = useUnsuspendDoctorMutation();
 
@@ -105,7 +106,6 @@ const DoctorsPage = () => {
     const mappedDetails = useMemo(() => {
         const doctor = fetchedDoctorDetails?.data;
         if (!doctor) return null;
-        console.log("Full Doctor Details:", doctor);
         return {
             id: doctor._id,
             uid: doctor.userId?.doctorId || 'N/A',
@@ -135,6 +135,23 @@ const DoctorsPage = () => {
         setCurrentPage(page);
     };
 
+    const handleSearch = (value) => {
+        setSearchTerm(value);
+        setCurrentPage(1);
+    };
+
+    const filteredDoctors = useMemo(() => {
+        if (!searchTerm.trim()) return doctorRecords;
+        const term = searchTerm.toLowerCase();
+        return doctorRecords.filter((doctor) =>
+            doctor.name?.toLowerCase().includes(term) ||
+            doctor.email?.toLowerCase().includes(term) ||
+            doctor.phone?.toLowerCase().includes(term) ||
+            doctor.specialist?.toLowerCase().includes(term) ||
+            doctor.hospital?.toLowerCase().includes(term)
+        );
+    }, [searchTerm, doctorRecords]);
+
     if (error) {
         return (
             <div className="text-center py-20 text-red-500 font-medium">
@@ -149,7 +166,12 @@ const DoctorsPage = () => {
         <div>
             <div className="flex justify-between items-center mb-4">
                 <h1 className="text-2xl font-bold mb-6">Doctor Management</h1>
-                <SearchInput />
+                <SearchInput
+                    value={searchTerm}
+                    onChange={(e) => handleSearch(e.target.value)}
+                    onSearch={handleSearch}
+                    placeholder="Search by name, email, specialty..."
+                />
             </div>
 
             <div className="grid grid-cols-1 gap-3">
@@ -169,8 +191,8 @@ const DoctorsPage = () => {
                         <Loader spinning={isLoading} />
                     </div>
                 ) : (
-                    doctorRecords.length > 0 ? (
-                        doctorRecords.map((doctor) => (
+                    filteredDoctors.length > 0 ? (
+                        filteredDoctors.map((doctor) => (
                             <CustomCard
                                 key={doctor.id}
                                 className="grid grid-cols-6 items-center gap-10 py-4 px-8 hover:shadow-md transition-all duration-300 cursor-pointer"
@@ -262,13 +284,13 @@ const DoctorsPage = () => {
                         ))
                     ) : (
                         <div className="text-center py-20 text-gray-500 font-medium">
-                            No doctors found.
+                            {searchTerm ? `No doctors matched "${searchTerm}"` : 'No doctors found.'}
                         </div>
                     )
                 )}
             </div>
 
-            {!isLoading && doctorRecords.length > 0 && (
+            {!isLoading && filteredDoctors.length > 0 && !searchTerm && (
                 <div className='flex justify-end mt-6'>
                     <CustomPagination
                         showSizeChanger={false}

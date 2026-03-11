@@ -37,7 +37,7 @@ const SupportPage = () => {
     };
 
     return (
-        <Loader size="large" spinning={isLoading || isFetching || isDeleting} tip="Loading...">
+        <Loader spinning={isLoading || isFetching || isDeleting} tip="Loading...">
             <div>
                 <h1 className="text-2xl font-bold mb-6">Help & Support</h1>
 

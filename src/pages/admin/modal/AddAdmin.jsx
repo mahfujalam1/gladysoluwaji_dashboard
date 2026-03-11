@@ -18,9 +18,7 @@ const AddAdmin = ({ visible, onCancel, onAdd, loading }) => {
       .then(values => {
         onAdd(values); // Call onAdd with the form values
       })
-      .catch(info => {
-        console.log('Validate Failed:', info);
-      });
+        .catch(() => { }); // validation errors shown inline by form
   };
 
   return (

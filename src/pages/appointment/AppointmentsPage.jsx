@@ -1,19 +1,17 @@
 import React, { useState } from 'react';
 import CustomCard from '../../components/common/CustomCard';
-import { useNavigate } from 'react-router-dom';
 import CustomPagination from '../../components/shared/Pagination';
 import { FaEye, FaRegCheckCircle } from 'react-icons/fa';
 import CustomSelect from '../../components/common/CustomSelect';
 import BookingDetails from './modal/BookingDetails';
-import { PiArrowCircleUpRightBold } from 'react-icons/pi';
-import { Button } from 'antd';
+// import { PiArrowCircleUpRightBold } from 'react-icons/pi';
+// import { Button } from 'antd';
 import CustomPopconfirm from '../../components/shared/Popconfirm';
 import toast from '../../utils/toast';
 import { useGetAppointmentsQuery } from '../../RTK/appointment/appointmentsApi';
 import Loader from '../../components/shared/Loader';
 
 const AppointmentsPage = () => {
-    const navigate = useNavigate();
     const [patients, setPatients] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
     const [patientsPerPage] = useState(10);
@@ -69,14 +67,6 @@ const AppointmentsPage = () => {
                 (patient) => patient.status === selectedFilter
             );
 
-
-    // 🔹 PAGINATION LOGIC
-    // Since API handles pagination, we use data directly, but if needed we can handle client logic or just use API meta.
-    // However, the current component logic slices `filteredPatients`. If we use API pagination, `patients` only contains current page.
-    // So we should NOT slice if using API pagination.
-    // But since filteredPatients is derived from `patients` (which is 1 page), slicing might be redundant or wrong if we slice 0-10 of 10 items.
-    // Let's rely on API pagination for `patients` and not slice again, unless we filter client side which reduces count.
-
     // For now, let's assume `filteredPatients` is what we show.
     const currentPatients = filteredPatients;
 
@@ -98,9 +88,7 @@ const AppointmentsPage = () => {
 
     const handleApprove = (patientId) => {
         toast.success("Request approved successfully!");
-        // Implement your approval logic here
-        console.log(`Approving patient with ID: ${patientId}`);
-        // You might want to update the patient status in your state or make an API call
+        // TODO: wire up actual approval API mutation here
     };
 
     return (
@@ -108,7 +96,7 @@ const AppointmentsPage = () => {
             {/* Header */}
             <div className="mb-4">
                 <h1 className="text-2xl font-bold">Booking Request</h1>
-                <div className='flex justify-between items-center mt-2'>
+                <div className='flex justify-end items-center mt-2'>
                     <CustomSelect
                         className='h-8'
                         options={filterOptions}
@@ -116,7 +104,7 @@ const AppointmentsPage = () => {
                         onChange={handleFilterChange}
                     />
 
-                    <div className='flex gap-2'>
+                    {/* <div className='flex gap-2'>
                         <Button className='text-lg! py-5! px-2! hover:text-[#006C93]! hover:border-[#006C93]!'
                             onClick={() => navigate("/fund-transfer")}
                         >
@@ -127,7 +115,7 @@ const AppointmentsPage = () => {
                         >
                             <PiArrowCircleUpRightBold size={22} className='text-red-600' />Fund Return
                         </Button>
-                    </div>
+                    </div> */}
                 </div>
             </div>
 

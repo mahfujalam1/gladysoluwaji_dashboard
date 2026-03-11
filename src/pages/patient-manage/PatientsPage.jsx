@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { FaUserCheck, FaUserSlash } from 'react-icons/fa';
 import CustomCard from '../../components/common/CustomCard';
 import CustomPopconfirm from '../../components/shared/Popconfirm';
@@ -17,6 +17,7 @@ const PatientsPage = () => {
 
     const [currentPage, setCurrentPage] = useState(1);
     const [patientsPerPage] = useState(10);
+    const [searchTerm, setSearchTerm] = useState('');
 
     const { data: patients, isLoading, error } = useGetPatientsQuery({
         page: currentPage,
@@ -76,6 +77,22 @@ const PatientsPage = () => {
         setCurrentPage(page);
     };
 
+    const handleSearch = (value) => {
+        setSearchTerm(value);
+        setCurrentPage(1);
+    };
+
+    const filteredPatients = useMemo(() => {
+        if (!searchTerm.trim()) return patientData;
+        const term = searchTerm.toLowerCase();
+        return patientData.filter((patient) =>
+            patient.name?.toLowerCase().includes(term) ||
+            patient.email?.toLowerCase().includes(term) ||
+            patient.emergencyContact?.toLowerCase().includes(term) ||
+            patient.id?.toLowerCase().includes(term)
+        );
+    }, [searchTerm, patientData]);
+
     if (error) {
         return <div className="text-center py-20 text-red-500">Error loading patients: {error?.data?.message || 'Something went wrong'}</div>;
     }
@@ -84,7 +101,12 @@ const PatientsPage = () => {
         <div>
             <div className="flex justify-between items-center mb-4">
                 <h1 className="text-2xl font-bold mb-6">Patient Management</h1>
-                 <SearchInput />
+                <SearchInput
+                    value={searchTerm}
+                    onChange={(e) => handleSearch(e.target.value)}
+                    onSearch={handleSearch}
+                    placeholder="Search by name, email, phone..."
+                />
             </div>
 
             <div className="grid grid-cols-1 gap-3">
@@ -104,8 +126,8 @@ const PatientsPage = () => {
                         <Loader spinning={isLoading} />
                     </div>
                 ) : (
-                    patientData.length > 0 ? (
-                        patientData.map((patient) => (
+                    filteredPatients.length > 0 ? (
+                        filteredPatients.map((patient) => (
                             <CustomCard
                                 key={patient.id}
                                 onClick={() => showModal(patient)}
@@ -167,20 +189,24 @@ const PatientsPage = () => {
                             </CustomCard>
                         ))
                     ) : (
-                        <div className="text-center py-20 text-gray-500">No patients found.</div>
+                        <div className="text-center py-20 text-gray-500">
+                            {searchTerm ? `No patients matched "${searchTerm}"` : 'No patients found.'}
+                        </div>
                     )
                 )}
             </div>
 
-            <div className='flex justify-end mt-6'>
-                <CustomPagination
-                    showSizeChanger={false}
-                    total={patients?.meta?.total || patientData.length}
-                    pageSize={patients?.meta?.limit || patientsPerPage}
-                    onChange={handlePageChange}
-                    current={currentPage}
-                />
-            </div>
+            {!isLoading && !searchTerm && (
+                <div className='flex justify-end mt-6'>
+                    <CustomPagination
+                        showSizeChanger={false}
+                        total={patients?.meta?.total || patientData.length}
+                        pageSize={patients?.meta?.limit || patientsPerPage}
+                        onChange={handlePageChange}
+                        current={currentPage}
+                    />
+                </div>
+            )}
 
             <PatientDetails
                 open={isModalVisible}

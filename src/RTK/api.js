@@ -9,7 +9,7 @@ const logout = () => {
   localStorage.removeItem("authToken");
 };
 
-const BASE_URL = "http://10.10.20.22:3001";
+const BASE_URL = "http://16.58.107.165";
 
 export const api = createApi({
   reducerPath: 'authApi',

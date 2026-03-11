@@ -84,7 +84,7 @@ const WellnessTipsPage = () => {
     };
 
     return (
-        <Loader size="large" spinning={isLoading || isFetching || isAdding || isUpdating || isDeleting} tip="Loading...">
+        <Loader spinning={isLoading || isFetching || isAdding || isUpdating || isDeleting} tip="Loading...">
             <div>
                 <h1 className="text-2xl font-bold mb-6">Daily Wellness Tips</h1>
 

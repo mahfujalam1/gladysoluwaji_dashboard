@@ -23,17 +23,26 @@ ChartJS.register(
   Legend
 );
 
-const RevenueActivityChart = () => {
+const RevenueActivityChart = ({ monthlyData = [] }) => {
+  const chartValues = monthlyData.length === 12
+    ? monthlyData
+    : Array(12).fill(0);
+
+  const maxValue = Math.max(...chartValues, 1000);
+  // Round up to a nice ceiling (next multiple of 1000)
+  const yMax = Math.ceil(maxValue / 1000) * 1000 + 1000;
+  const stepSize = yMax <= 5000 ? 1000 : yMax <= 10000 ? 2000 : 5000;
+
   const data = {
     labels: ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'],
     datasets: [
       {
         fill: true,
         label: 'Revenue',
-        data: [3500, 4500, 11000, 10500, 5000, 4000, 5500, 4200, 6000, 3000, 3800, 2500], // Approximated from image
+        data: chartValues,
         borderWidth: 5,
         borderJoinStyle: 'round',
-        borderColor: '#006C93', // Blue line color
+        borderColor: '#006C93',
         backgroundColor: (context) => {
           const chart = context.chart;
           const { ctx, chartArea } = chart;
@@ -41,13 +50,13 @@ const RevenueActivityChart = () => {
             return;
           }
           let gradient = ctx.createLinearGradient(0, chartArea.top, 0, chartArea.bottom);
-          gradient.addColorStop(0, 'rgba(0, 117, 255, 0.3)'); // Light blue for fill
-          gradient.addColorStop(1, 'rgba(0, 117, 255, 0)'); // Transparent at bottom
+          gradient.addColorStop(0, 'rgba(0, 117, 255, 0.3)');
+          gradient.addColorStop(1, 'rgba(0, 117, 255, 0)');
           return gradient;
         },
-        tension: 0.4, // Smooth curve
-        pointRadius: 0, // No visible points
-        pointHoverRadius: 6, // Larger hover points
+        tension: 0.4,
+        pointRadius: 0,
+        pointHoverRadius: 6,
         pointHoverBackgroundColor: '#006C93',
         pointHoverBorderColor: 'white',
         pointHoverBorderWidth: 2,
@@ -75,7 +84,7 @@ const RevenueActivityChart = () => {
               label += ': ';
             }
             if (context.parsed.y !== null) {
-              label += `$${context.parsed.y.toLocaleString()}k`;
+              label += `₦${context.parsed.y.toLocaleString()}`;
             }
             return label;
           }
@@ -85,31 +94,31 @@ const RevenueActivityChart = () => {
     scales: {
       x: {
         grid: {
-          display: false, // No vertical grid lines
+          display: false,
         },
         ticks: {
           font: {
             size: 10,
           },
-          color: '#6b7280', // Gray color for labels
+          color: '#6b7280',
         },
       },
       y: {
         min: 0,
-        max: 12000,
+        max: yMax,
         ticks: {
-          stepSize: 2000,
+          stepSize,
           callback: function (value) {
-            return value / 1000 + 'K';
+            return value >= 1000 ? value / 1000 + 'K' : value;
           },
           font: {
             size: 10,
           },
-          color: '#6b7280', // Gray color for labels
+          color: '#6b7280',
         },
         grid: {
-          color: '#e5e7eb', // Light gray horizontal grid lines
-          borderDash: [5, 5], // Dashed grid lines
+          color: '#e5e7eb',
+          borderDash: [5, 5],
         },
       },
     },
