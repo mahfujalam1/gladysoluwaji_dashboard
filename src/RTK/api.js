@@ -1,27 +1,32 @@
 
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
-const getAuthToken = () => {
-  return localStorage.getItem("authToken");
-};
+const BASE_URL = "https://api.wecurehealth.com";
 
-const logout = () => {
-  localStorage.removeItem("authToken");
-};
+const baseQuery = fetchBaseQuery({
+  baseUrl: BASE_URL,
+  prepareHeaders: (headers) => {
+    const token = localStorage.getItem("authToken");
+    if (token) {
+      headers.set("Authorization", `Bearer ${token}`);
+    }
+    return headers;
+  },
+});
 
-const BASE_URL = "http://16.58.107.165";
+const baseQueryWithReauth = async (args, api, extraOptions) => {
+  let result = await baseQuery(args, api, extraOptions);
+
+  if (result?.error && result.error.status === 401) {
+    // Token expired or invalid
+    localStorage.removeItem("authToken");
+    window.location.href = "/login";
+  }
+  return result;
+};
 
 export const api = createApi({
   reducerPath: 'authApi',
-  baseQuery: fetchBaseQuery({
-    baseUrl: BASE_URL,
-    prepareHeaders: (headers, { getState }) => {
-      const token = getAuthToken();
-      if (token) {
-        headers.set("Authorization", `Bearer ${token}`);
-      }
-      return headers;
-    },
-  }),
+  baseQuery: baseQueryWithReauth,
   endpoints: (builder) => ({}),
 });
