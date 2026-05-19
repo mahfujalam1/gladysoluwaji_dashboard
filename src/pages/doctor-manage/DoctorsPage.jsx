@@ -38,7 +38,10 @@ const DoctorsPage = () => {
     useEffect(() => {
         const rawData = doctorsResponse?.data?.data || doctorsResponse?.data;
         if (rawData && Array.isArray(rawData)) {
-            const mappedDoctors = rawData.map((doctor) => ({
+            const filteredRaw = rawData.filter(
+                (doctor) => !(doctor.verificationStatus === 'PENDING' && doctor.isVerified === false)
+            );
+            const mappedDoctors = filteredRaw.map((doctor) => ({
                 id: doctor._id,
                 uid: doctor.userId?.doctorId || 'N/A',
                 name: doctor.userId?.name || 'N/A',
