@@ -11,6 +11,7 @@ import DoctorsPage from '../pages/doctor-manage/DoctorsPage';
 import PatientsPage from '../pages/patient-manage/PatientsPage';
 import AdminsPage from '../pages/admin/AdminsPage';
 import WellnessTipsPage from '../pages/wellness-tips/WellnessTipsPage';
+import SpecialtiesPage from '../pages/specialties/SpecialtiesPage';
 // import SubscriptionPage from '../pages/subscription/SubscriptionPage';
 import SupportPage from '../pages/setting/SupportPage';
 import TermsPage from '../pages/setting/TermsPage';
@@ -90,6 +91,10 @@ const router = createBrowserRouter([
       {
         path: '/wellness-tips',
         element: <WellnessTipsPage />,
+      },
+      {
+        path: '/specialties',
+        element: <SpecialtiesPage />,
       },
       {
         path: '/audit-log',

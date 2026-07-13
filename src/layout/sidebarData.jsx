@@ -1,4 +1,4 @@
-import { FaHospitalUser, FaUserDoctor } from "react-icons/fa6";
+import { FaHospitalUser, FaUserDoctor, FaStethoscope } from "react-icons/fa6";
 import {
   LuLayoutDashboard,
   LuCalendarDays,
@@ -39,6 +39,11 @@ export const sidebarLinks = [
     label: "Patient Management",
     path: "/patients",
     icon: <FaHospitalUser />,
+  },
+  {
+    label: "Specialties",
+    path: "/specialties",
+    icon: <FaStethoscope />,
   },
   {
     label: "Admin Management",
