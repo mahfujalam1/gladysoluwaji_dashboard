@@ -23,3 +23,77 @@ body::selection {
   background: #006C93;
   color: #fff;
 }
+
+/* Legal Content Typography (Jodit Editor HTML Rendering) */
+.legal-content h1 {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: #0f172a;
+  margin-top: 1.5rem;
+  margin-bottom: 0.75rem;
+}
+
+.legal-content h2 {
+  font-size: 1.35rem;
+  font-weight: 600;
+  color: #006C93;
+  margin-top: 1.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.legal-content h3 {
+  font-size: 1.15rem;
+  font-weight: 600;
+  color: #1e293b;
+  margin-top: 1.25rem;
+  margin-bottom: 0.5rem;
+}
+
+.legal-content p {
+  color: #475569;
+  line-height: 1.75;
+  margin-bottom: 1rem;
+}
+
+.legal-content ul {
+  list-style-type: disc;
+  padding-left: 1.5rem;
+  margin-bottom: 1rem;
+  color: #475569;
+}
+
+.legal-content ol {
+  list-style-type: decimal;
+  padding-left: 1.5rem;
+  margin-bottom: 1rem;
+  color: #475569;
+}
+
+.legal-content li {
+  margin-bottom: 0.4rem;
+  line-height: 1.6;
+}
+
+.legal-content a {
+  color: #006C93;
+  text-decoration: underline;
+}
+
+.legal-content strong {
+  color: #0f172a;
+  font-weight: 600;
+}
+
+.legal-content table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+}
+
+.legal-content th,
+.legal-content td {
+  border: 1px solid #e2e8f0;
+  padding: 0.75rem;
+  text-align: left;
+}

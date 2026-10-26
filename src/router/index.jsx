@@ -26,8 +26,36 @@ import ResetPasswordPage from '../pages/auth/ResetPasswordPage';
 import ProtectedRoute from './ProtectedRoute';
 import DoctorAllAppointments from '../pages/doctor-manage/DoctorAllAppointments';
 import AuditLog from '../pages/audit/AuditLog';
+import PublicTermsPage from '../pages/public/PublicTermsPage';
+import PublicPrivacyPage from '../pages/public/PublicPrivacyPage';
+import PublicContactPage from '../pages/public/PublicContactPage';
 
 const router = createBrowserRouter([
+  // Public Routes (Accessible without login)
+  {
+    path: '/terms',
+    element: <PublicTermsPage />,
+  },
+  {
+    path: '/terms-and-conditions',
+    element: <PublicTermsPage />,
+  },
+  {
+    path: '/privacy',
+    element: <PublicPrivacyPage />,
+  },
+  {
+    path: '/privacy-policy',
+    element: <PublicPrivacyPage />,
+  },
+  {
+    path: '/contact',
+    element: <PublicContactPage />,
+  },
+  {
+    path: '/contact-us',
+    element: <PublicContactPage />,
+  },
   {
     path: '/login',
     element: <LoginPage />,
@@ -105,11 +133,19 @@ const router = createBrowserRouter([
         element: <SupportPage />,
       },
       {
-        path: '/terms',
+        path: '/settings/terms',
         element: <TermsPage />,
       },
       {
-        path: '/privacy',
+        path: '/terms/edit',
+        element: <TermsPage />,
+      },
+      {
+        path: '/settings/privacy',
+        element: <PrivacyPage />,
+      },
+      {
+        path: '/privacy/edit',
         element: <PrivacyPage />,
       },
       {

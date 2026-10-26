@@ -7,6 +7,8 @@ import toast from '../../utils/toast';
 import Loader from '../../components/shared/Loader';
 import { useGetTermsQuery, useUpdateTermsMutation } from '../../RTK/terms/termsApi';
 
+import { LuExternalLink } from 'react-icons/lu';
+
 const TermsPage = () => {
     const { data, isLoading, isFetching } = useGetTermsQuery();
     const [termsContent, setTermsContent] = useState('');
@@ -41,7 +43,18 @@ const TermsPage = () => {
     return (
         <Loader spinning={isLoading || isFetching} tip="Loading...">
             <div>
-                <h1 className="text-2xl font-bold mb-4">Terms & Conditions</h1>
+                <div className="flex items-center justify-between mb-4">
+                    <h1 className="text-2xl font-bold">Terms & Conditions</h1>
+                    <a
+                        href="/terms"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-1.5 text-sm font-medium text-[#006C93] hover:text-[#005472] bg-white border border-[#006C93]/30 hover:border-[#006C93] px-3.5 py-1.5 rounded-lg transition shadow-2xs"
+                    >
+                        <span>View Public Page</span>
+                        <LuExternalLink className="w-4 h-4" />
+                    </a>
+                </div>
                 <CustomCard>
                     <div className="p-4">
                         <CustomJoditEditor

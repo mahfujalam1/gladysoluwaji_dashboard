@@ -6,6 +6,7 @@ import CustomButton from '../../components/shared/Button';
 import toast from '../../utils/toast';
 import Loader from '../../components/shared/Loader';
 import { useGetPrivacyQuery, useUpdatePrivacyMutation } from '../../RTK/privacy/privacyApi';
+import { LuExternalLink } from 'react-icons/lu';
 
 const PrivacyPage = () => {
     const { data, isLoading, isFetching } = useGetPrivacyQuery();
@@ -41,7 +42,18 @@ const PrivacyPage = () => {
     return (
         <Loader spinning={isLoading || isFetching} tip="Loading...">
             <div>
-                <h1 className="text-2xl font-bold mb-4">Privacy & Policy</h1>
+                <div className="flex items-center justify-between mb-4">
+                    <h1 className="text-2xl font-bold">Privacy & Policy</h1>
+                    <a
+                        href="/privacy"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-1.5 text-sm font-medium text-[#006C93] hover:text-[#005472] bg-white border border-[#006C93]/30 hover:border-[#006C93] px-3.5 py-1.5 rounded-lg transition shadow-2xs"
+                    >
+                        <span>View Public Page</span>
+                        <LuExternalLink className="w-4 h-4" />
+                    </a>
+                </div>
                 <CustomCard>
                     <div className="p-4">
                         <CustomJoditEditor

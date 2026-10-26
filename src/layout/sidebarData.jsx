@@ -1,3 +1,4 @@
+import React from "react";
 import { FaHospitalUser, FaUserDoctor, FaStethoscope } from "react-icons/fa6";
 import {
   LuLayoutDashboard,
@@ -72,13 +73,15 @@ export const sidebarLinks = [
       },
       {
         label: "Terms & Conditions",
-        path: "/terms",
+        path: "/settings/terms",
         icon: <LuFileText />,
+        activePaths: ["/settings/terms", "/terms/edit"],
       },
       {
         label: "Privacy & Policy",
-        path: "/privacy",
+        path: "/settings/privacy",
         icon: <LuShield />,
+        activePaths: ["/settings/privacy", "/privacy/edit"],
       },
     ],
   },
