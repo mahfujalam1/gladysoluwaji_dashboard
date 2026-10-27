@@ -1,163 +1,183 @@
 import React, { useState } from 'react';
-import { Collapse, Image, Modal, Tag, Spin } from 'antd';
-
-const { Panel } = Collapse;
+import { Image, Modal, Spin } from 'antd';
+import { useNavigate } from 'react-router-dom';
+import {
+    LuBuilding,
+    LuMail,
+    LuPhone,
+    LuCalendar,
+    LuStethoscope,
+    LuExternalLink,
+    LuBriefcase,
+    LuFileText,
+    LuCheck,
+    LuCopy
+} from 'react-icons/lu';
 
 const DoctorDetailsModal = ({ open, onClose, doctor, isLoading }) => {
+    const navigate = useNavigate();
+    const [copied, setCopied] = useState(false);
+
     if (!doctor) {
         return null;
     }
-
-    const [preview, setPreview] = useState(null);
-    const [copied, setCopied] = useState(false);
 
     const handleCopy = () => {
         const idToCopy = doctor.uid || doctor.id || "";
         navigator.clipboard.writeText(idToCopy.toString());
         setCopied(true);
-
-        setTimeout(() => setCopied(false), 1200);
+        setTimeout(() => setCopied(false), 1500);
     };
 
     return (
-        <div>
-            <Modal
-                title={<h2 className="text-2xl font-bold">Doctor Details</h2>}
-                centered
-                open={open}
-                onCancel={onClose}
-                footer={null}
-                width={950}
-            >
-                {isLoading ? (
-                    <div className="flex justify-center items-center py-20">
-                        <Spin size="large" />
-                    </div>
-                ) : (
-                    <div className="p-4 bg-white text-gray-900 mx-auto">
-                        {/* Header Section */}
-                        <div className="flex justify-between items-start mb-5">
-                            <div className="flex items-center">
-                                <img
-                                    src={doctor.avatar}
-                                    alt={doctor.name}
-                                    className="w-32 h-32 rounded-full object-cover mr-6"
-                                />
-                                <div>
+        <Modal
+            title={
+                <div className="flex items-center justify-between pr-8 pb-3 border-b border-gray-100">
+                    <h2 className="text-xl font-bold text-gray-900">Doctor Profile Summary</h2>
+                    <button
+                        onClick={() => {
+                            onClose();
+                            navigate(`/doctor-requests-details/${doctor.id}`, { state: { doctor } });
+                        }}
+                        className="px-3 py-1 bg-[#006C93]/10 hover:bg-[#006C93] text-[#006C93] hover:text-white rounded-lg text-xs font-semibold transition-colors flex items-center gap-1 cursor-pointer"
+                    >
+                        <span>Full Review Page</span>
+                        <LuExternalLink size={12} />
+                    </button>
+                </div>
+            }
+            centered
+            open={open}
+            onCancel={onClose}
+            footer={null}
+            width={850}
+        >
+            {isLoading ? (
+                <div className="flex justify-center items-center py-24">
+                    <Spin size="large" />
+                </div>
+            ) : (
+                <div className="py-3 text-gray-900 space-y-6">
+                    {/* Header Section */}
+                    <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-5 p-4 bg-gray-50 rounded-xl border border-gray-100">
+                        <div className="flex items-center gap-4">
+                            <img
+                                src={doctor.avatar}
+                                alt={doctor.name}
+                                className="w-20 h-20 rounded-2xl object-cover border border-gray-200 shadow-2xs bg-white"
+                                onError={(e) => {
+                                    e.target.src = 'https://placehold.net/avatar.svg?text=DR&bg=212121';
+                                }}
+                            />
+                            <div>
+                                <div className="flex items-center gap-2">
+                                    <h3 className="text-xl font-bold text-gray-900">{doctor.name}</h3>
+                                    <button
+                                        onClick={handleCopy}
+                                        title="Click to copy ID"
+                                        className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-xs font-mono font-medium border border-[#006C93]/30 text-[#006C93] hover:bg-[#006C93]/10 transition-colors cursor-pointer"
+                                    >
+                                        {copied ? <LuCheck size={12} className="text-emerald-600" /> : <LuCopy size={12} />}
+                                        <span>{copied ? 'Copied' : `ID: ${doctor.uid || doctor.id}`}</span>
+                                    </button>
+                                </div>
+                                <div className="flex items-center gap-2 mt-1 text-xs text-gray-600">
+                                    <span className="font-semibold text-[#006C93]">{doctor.specialist}</span>
+                                    <span>&middot;</span>
+                                    <span>{doctor.hospital}</span>
+                                </div>
+                                <div className="flex flex-wrap items-center gap-x-4 gap-y-1 mt-2 text-xs text-gray-500">
+                                    <span className="flex items-center gap-1">
+                                        <LuMail size={12} /> {doctor.email}
+                                    </span>
+                                    <span className="flex items-center gap-1">
+                                        <LuPhone size={12} /> {doctor.phone}
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
 
-                                    <div className='flex gap-2'>
-                                        <h2 className="text-2xl font-bold">{doctor.name}</h2>
-                                        <div
-                                            onClick={handleCopy}
-                                            className={`inline-block border border-[#006C93] text-[#006C93] rounded-full px-2 py-1 text-sm cursor-pointer transition-all duration-300 ${copied ? "border-green-600 text-green-600" : ""
-                                                }`}
+                        <div className="text-left sm:text-right text-xs text-gray-500 space-y-1 self-start sm:self-auto">
+                            <div>Registered: <strong className="text-gray-800">{doctor.requestedDate}</strong></div>
+                            <div>Approved: <strong className="text-gray-800">{doctor.approvalDate}</strong></div>
+                        </div>
+                    </div>
+
+                    {/* About & Services */}
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+                        <div className="md:col-span-2">
+                            <h4 className="text-xs font-bold uppercase tracking-wider text-gray-500 mb-1.5">About</h4>
+                            <p className="text-xs text-gray-700 leading-relaxed bg-gray-50/70 p-3 rounded-lg border border-gray-100">
+                                {doctor.about || 'No description provided.'}
+                            </p>
+                        </div>
+
+                        <div>
+                            <h4 className="text-xs font-bold uppercase tracking-wider text-gray-500 mb-1.5">Services</h4>
+                            {doctor.services?.length > 0 ? (
+                                <div className="flex flex-wrap gap-1.5">
+                                    {doctor.services.map((s, index) => (
+                                        <span
+                                            key={index}
+                                            className="px-2.5 py-1 bg-white border border-gray-200 text-gray-700 rounded-md text-xs font-medium"
                                         >
-                                            {copied ? "Copied!" : `ID: ${doctor.uid || doctor.id}`}
-                                        </div>
-
-                                    </div>
-                                    <p className="text-gray-700 mt-1">{doctor.specialist}</p>
-                                    <p className="text-gray-700">{doctor.hospital}</p>
-                                    {doctor.uid && <p className="text-gray-700">National ID: {doctor.uid}</p>}
-                                    <p className="text-gray-700 mt-2">{doctor.email}</p>
-                                    <p className="text-gray-700">{doctor.phone}</p>
+                                            {s}
+                                        </span>
+                                    ))}
                                 </div>
-                            </div>
-
-                            <div className="text-right text-sm text-gray-700">
-                                <p><span className="font-semibold">Requested Date:</span> {doctor.requestedDate}</p>
-                                <p><span className="font-semibold">Approval Date:</span> {doctor.approvalDate}</p>
-                            </div>
-                        </div>
-
-                        {/* About + Services */}
-                        <div className="flex justify-between mb-5">
-                            <div className="w-1/2 pr-6">
-                                <h3 className="font-semibold text-lg mb-2">About</h3>
-                                <p className="text-gray-700 leading-relaxed">{doctor.about || 'N/A'}</p>
-                            </div>
-
-                            <div className="w-1/3">
-                                <h3 className="font-semibold text-lg mb-2 text-right">Services</h3>
-                                <ul className="text-gray-700 space-y-1">
-                                    {doctor.services?.length > 0 ? (
-                                        doctor.services.map((s, index) => (
-                                            <li key={index} className="flex items-center justify-end">
-                                                {s}
-                                                <span className="w-2 h-2 bg-[#006C93] rounded-full ml-2"></span>
-                                            </li>
-                                        ))
-                                    ) : (
-                                        <li className="text-right">No services listed</li>
-                                    )}
-                                </ul>
-                            </div>
-                        </div>
-
-                        {/* Bank + exp */}
-                        <div className="flex justify-between mb-8">
-                            {/* Bank */}
-                            {doctor.bankInfo && Object.keys(doctor.bankInfo).length > 0 ? (
-                                <div>
-                                    <h3 className="font-semibold text-lg mb-2">Bank Information</h3>
-                                    <div className="grid grid-cols-2 gap-y-2 text-gray-700">
-                                        <p className="font-semibold">Bank Name :</p>
-                                        <p>{doctor.bankInfo?.bankName || 'N/A'}</p>
-
-                                        <p className="font-semibold">Account Name :</p>
-                                        <p>{doctor.bankInfo?.accountName || 'N/A'}</p>
-
-                                        <p className="font-semibold">Account Number :</p>
-                                        <p>{doctor.bankInfo?.accountNumber || 'N/A'}</p>
-                                    </div>
-                                </div>
-                            ) : <p className="text-gray-700">No bank information listed</p>}
-
-                            {/* Experience */}
-                            {doctor.experience && doctor.experience.length > 0 ? (
-                                <div className="text-right">
-                                    <h3 className="font-semibold text-lg mb-2">Experience</h3>
-                                    <div className="space-y-4">
-                                        {doctor.experience.map((exp, index) => (
-                                            <div key={index} className="text-gray-700">
-                                                <p className="font-bold text-md">{exp.hospital}</p>
-                                                <p>{exp.role}</p>
-                                                <p className="text-sm text-gray-500">{exp.period} &middot; {exp.duration}</p>
-                                            </div>
-                                        ))}
-                                    </div>
-                                </div>
-                            ) : <p className="text-gray-700">No experience listed</p>}
-                        </div>
-
-                        <div className='mt-4'>
-                            <Collapse>
-                                <Panel header="Documents">
-                                    <div className='flex flex-wrap gap-2'>
-                                        <Image.PreviewGroup>
-                                            {doctor.documents?.length > 0 ? (
-                                                doctor.documents.map((document, index) => {
-                                                    return (
-                                                        <Image
-                                                            key={index}
-                                                            src={document}
-                                                            alt=""
-                                                            className="w-32! h-32! object-cover"
-                                                        />
-                                                    );
-                                                })
-                                            ) : (
-                                                <p>No Documents found.</p>
-                                            )}
-                                        </Image.PreviewGroup>
-                                    </div>
-                                </Panel>
-                            </Collapse>
+                            ) : (
+                                <p className="text-xs text-gray-400 italic">No services listed</p>
+                            )}
                         </div>
                     </div>
-                )}
-            </Modal>
-        </div>
+
+                    {/* Experience Section */}
+                    {doctor.experience && doctor.experience.length > 0 && (
+                        <div>
+                            <h4 className="text-xs font-bold uppercase tracking-wider text-gray-500 mb-2 flex items-center gap-1.5">
+                                <LuBriefcase size={14} className="text-[#006C93]" />
+                                Clinical Experience
+                            </h4>
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                                {doctor.experience.map((exp, index) => (
+                                    <div key={index} className="p-3 bg-gray-50 border border-gray-100 rounded-lg text-xs">
+                                        <div className="font-bold text-gray-800">{exp.hospital}</div>
+                                        <div className="text-gray-600 mt-0.5">{exp.role}</div>
+                                        <div className="text-[11px] text-gray-400 mt-1">{exp.period} &middot; {exp.duration}</div>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    )}
+
+                    {/* Documents */}
+                    <div>
+                        <h4 className="text-xs font-bold uppercase tracking-wider text-gray-500 mb-2 flex items-center gap-1.5">
+                            <LuFileText size={14} className="text-[#006C93]" />
+                            Uploaded Documents
+                        </h4>
+                        <div className="flex flex-wrap gap-3">
+                            <Image.PreviewGroup>
+                                {doctor.documents?.length > 0 ? (
+                                    doctor.documents.map((doc, idx) => (
+                                        <div key={idx} className="w-24 h-24 rounded-lg overflow-hidden border border-gray-200 bg-gray-50">
+                                            <Image
+                                                src={doc}
+                                                alt={`doc-${idx}`}
+                                                className="w-24! h-24! object-cover"
+                                                fallback="https://placehold.net/document.svg?text=Doc&bg=f3f4f6"
+                                            />
+                                        </div>
+                                    ))
+                                ) : (
+                                    <p className="text-xs text-gray-400 italic">No documents uploaded</p>
+                                )}
+                            </Image.PreviewGroup>
+                        </div>
+                    </div>
+                </div>
+            )}
+        </Modal>
     );
 };
 
