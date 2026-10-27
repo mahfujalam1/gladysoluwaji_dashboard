@@ -97,6 +97,10 @@ const router = createBrowserRouter([
         element: <DoctorRequestDetails />,
       },
       {
+        path: '/doctor-requests-details/:id',
+        element: <DoctorRequestDetails />,
+      },
+      {
         path: '/doctor-requests',
         element: <DoctorRequestsPage />,
       },

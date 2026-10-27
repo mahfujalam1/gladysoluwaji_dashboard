@@ -25,7 +25,7 @@ export const sidebarLinks = [
     activePaths: ["/fund-transfer", "/fund-return"],
   },
   {
-    label: "New Doctor Request",
+    label: "Doctor Review Queue",
     path: "/doctor-requests",
     icon: <LuUserPlus />,
     activePaths: ["/doctor-requests-details"],

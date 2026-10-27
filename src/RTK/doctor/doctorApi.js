@@ -17,13 +17,25 @@ const doctorApi = api.injectEndpoints({
             }),
             providesTags: ['Doctors']
         }),
+        updateDoctorStatus: builder.mutation({
+            query: ({ id, status, note }) => ({
+                url: `/api/doctors/${id}/status`,
+                method: 'PATCH',
+                body: { status, note }
+            }),
+            invalidatesTags: (result, error, { id }) => [
+                { type: 'Doctors', id },
+                'Doctors',
+                'NewDoctors'
+            ]
+        }),
         suspendDoctor: builder.mutation({
             query: ({ id, note }) => ({
                 url: `/api/doctors/${id}/status`,
                 method: 'PATCH',
                 body: { status: 'SUSPENDED', note: note }
             }),
-            invalidatesTags: ['Doctors']
+            invalidatesTags: ['Doctors', 'NewDoctors']
         }),
         unsuspendDoctor: builder.mutation({
             query: (id) => ({
@@ -53,6 +65,7 @@ const doctorApi = api.injectEndpoints({
 
 export const { useGetDoctorsQuery,
     useGetDoctorByIdQuery,
+    useUpdateDoctorStatusMutation,
     useSuspendDoctorMutation,
     useUnsuspendDoctorMutation,
     useGetDoctorAppointmentsQuery,
