@@ -15,7 +15,7 @@ const AddSpecialty = ({ visible, onCancel, onAdd, loading, initialData }) => {
           name: initialData.name,
           status: initialData.isActive,
         });
-        if (initialData.image && initialData.image !== 'https://placehold.net/avatar.svg') {
+        if (initialData.image && !initialData.image.includes('default-avatar.svg') && !initialData.image.includes('placehold.net')) {
           setFileList([
             {
               uid: '-1',

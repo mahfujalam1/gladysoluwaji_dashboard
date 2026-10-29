@@ -2,6 +2,7 @@ import React, { useState, useMemo } from 'react';
 import CustomCard from '../../components/common/CustomCard';
 import { useNavigate } from 'react-router-dom';
 import CustomPagination from '../../components/shared/Pagination';
+import { getImageUrl, defaultAvatar } from '../../utils/imageUrl';
 import { useGetNewDoctorsQuery } from '../../RTK/doctor/newDoctor';
 import { useGetDoctorsQuery } from '../../RTK/doctor/doctorApi';
 import Loader from '../../components/shared/Loader';
@@ -106,7 +107,7 @@ const DoctorRequestsPage = () => {
                 name: doctor.userId?.name || 'Unnamed Doctor',
                 email: doctor.userId?.email || 'N/A',
                 phone: doctor.userId?.phone || 'N/A',
-                avatar: doctor.userId?.profileImage || 'https://placehold.net/avatar.svg?text=DR&bg=212121',
+                avatar: getImageUrl(doctor.userId?.profileImage),
                 specialty: doctor.specialtyId?.name || 'General Practice',
                 organization: doctor.currentOrganization || 'Not Specified',
                 mdcnRegistrationNumber: doctor.mdcnRegistrationNumber || 'N/A',
@@ -302,7 +303,8 @@ const DoctorRequestsPage = () => {
                                     alt={doctor.name}
                                     className="w-12 h-12 rounded-full object-cover shrink-0 border border-gray-100 shadow-2xs bg-gray-50"
                                     onError={(e) => {
-                                        e.target.src = 'https://placehold.net/avatar.svg?text=DR&bg=212121';
+                                        e.currentTarget.onerror = null;
+                                        e.currentTarget.src = defaultAvatar;
                                     }}
                                 />
                                 <div className="min-w-0">

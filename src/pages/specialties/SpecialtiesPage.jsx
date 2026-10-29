@@ -7,6 +7,7 @@ import { LuTrash2 } from 'react-icons/lu';
 import { FaPen } from 'react-icons/fa6';
 import AddSpecialty from './modal/AddSpecialty';
 import Loader from '../../components/shared/Loader';
+import { getImageUrl, defaultAvatar } from '../../utils/imageUrl';
 import { 
     useGetSpecialistsQuery, 
     useAddSpecialistMutation, 
@@ -29,7 +30,7 @@ const SpecialtiesPage = () => {
         if (specialists?.data) {
             const mapped = specialists.data.map(item => ({
                 id: item._id,
-                image: item.thumbnail ? (item.thumbnail.startsWith('http') ? item.thumbnail : `https://api.wecurehealth.com${item.thumbnail}`) : 'https://placehold.net/avatar.svg',
+                image: getImageUrl(item.thumbnail),
                 name: item.name,
                 date: item.createdAt ? new Date(item.createdAt).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }) : 'N/A',
                 status: item.isActive ? 'ACTIVE' : 'INACTIVE',
@@ -114,6 +115,10 @@ const SpecialtiesPage = () => {
                                     src={specialty.image}
                                     alt="specialty"
                                     className="w-10 h-10 rounded object-cover"
+                                    onError={(e) => {
+                                        e.currentTarget.onerror = null;
+                                        e.currentTarget.src = defaultAvatar;
+                                    }}
                                 />
                                 <div className="font-medium">{specialty.name}</div>
                             </div>

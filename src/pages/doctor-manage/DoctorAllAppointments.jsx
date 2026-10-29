@@ -8,6 +8,7 @@ import { IoIosArrowBack } from 'react-icons/io';
 import CustomPagination from '../../components/shared/Pagination';
 import { useGetDoctorAppointmentsQuery, useGetDoctorBookingDetailsByIdQuery } from '../../RTK/doctor/doctorApi';
 import Loader from '../../components/shared/Loader';
+import { getImageUrl, defaultAvatar } from '../../utils/imageUrl';
 
 
 const DoctorAllAppointments = () => {
@@ -32,7 +33,7 @@ const DoctorAllAppointments = () => {
             const mappedPatients = appointmentsData.data.map(appointment => ({
                 id: appointment._id,
                 patientName: appointment.patientName,
-                avatar: appointment.patientProfileImage || 'https://placehold.net/avatar.svg',
+                avatar: getImageUrl(appointment.patientProfileImage),
                 contactNumber: appointment.patientPhone,
                 visitingTime: appointment.appointmentTime,
                 visitReason: appointment.reasonTitle,
@@ -141,6 +142,10 @@ const DoctorAllAppointments = () => {
                                         src={patient.avatar}
                                         alt="avatar"
                                         className="w-10 h-10 rounded-full object-cover"
+                                        onError={(e) => {
+                                            e.currentTarget.onerror = null;
+                                            e.currentTarget.src = defaultAvatar;
+                                        }}
                                     />
                                     <div className="font-medium">{patient.patientName}</div>
                                 </div>

@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import CustomCard from '../../components/common/CustomCard';
 import { Button, Input, Form, Skeleton, Space } from 'antd';
-import { FaCamera } from 'react-icons/fa';
+import { FaCamera, FaUser } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 import { IoIosArrowBack } from 'react-icons/io';
 import toast from '../../utils/toast';
 import { useGetProfileQuery, useUpdateProfileMutation } from '../../RTK/profile/profileApi';
+import { getImageUrl } from '../../utils/imageUrl';
 
 const EditProfile = () => {
     const navigate = useNavigate();
@@ -13,7 +14,10 @@ const EditProfile = () => {
     const [preview, setPreview] = useState('');
     const [isLoading, setIsLoading] = useState(true);
 
-    const { data: profileData, isLoading: profileLoading, error: profileError } = useGetProfileQuery();
+    const { data: profileData, isLoading: profileLoading, error: profileError } = useGetProfileQuery(undefined, {
+        refetchOnFocus: false,
+        refetchOnReconnect: false,
+    });
     const [updateProfile] = useUpdateProfileMutation();
 
 
@@ -23,7 +27,12 @@ const EditProfile = () => {
                 name: profileData.data.name,
                 phone: profileData.data.phone,
             });
-            setPreview(profileData.data.profileImage || 'https://placehold.net/avatar.svg');
+            const img = profileData.data.profileImage;
+            if (img && typeof img === 'string' && img.trim() !== '' && !img.includes('placehold.net')) {
+                setPreview(getImageUrl(img));
+            } else {
+                setPreview('');
+            }
         }
     }, [profileData, form]);
 
@@ -95,11 +104,18 @@ const EditProfile = () => {
 
                         {/* Profile Image */}
                         <div className="flex items-center gap-4 mb-6">
-                            <img
-                                src={preview}
-                                className="w-24 h-24 rounded-full object-cover"
-                                alt="Profile"
-                            />
+                            {preview ? (
+                                <img
+                                    src={preview}
+                                    className="w-24 h-24 rounded-full object-cover border border-gray-200"
+                                    alt="Profile"
+                                    onError={() => setPreview('')}
+                                />
+                            ) : (
+                                <div className="w-24 h-24 rounded-full bg-[#006C93]/10 text-[#006C93] flex items-center justify-center border border-[#006C93]/20">
+                                    <FaUser className="text-4xl" />
+                                </div>
+                            )}
 
                             <label className="cursor-pointer flex items-center gap-2 text-sm text-[#005877] font-medium">
                                 <FaCamera size={18} />

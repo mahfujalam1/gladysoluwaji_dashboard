@@ -4,6 +4,8 @@ import { IoIosArrowBack } from 'react-icons/io';
 import { Image, Modal, Input } from 'antd';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import toast from '../../utils/toast';
+import { getImageUrl, defaultAvatar } from '../../utils/imageUrl';
+import defaultDocument from '../../assets/default-document.svg';
 import {
     useGetDoctorReviewDetailsQuery,
     useUpdateDoctorStatusMutation
@@ -225,7 +227,7 @@ const DoctorRequestDetails = () => {
                                         src={url}
                                         alt={title}
                                         className="h-40! w-full! object-cover"
-                                        fallback="https://placehold.net/document.svg?text=Document&bg=f3f4f6"
+                                        fallback={defaultDocument}
                                     />
                                 </div>
                             )}
@@ -419,11 +421,12 @@ const DoctorRequestDetails = () => {
                 <div className="flex flex-col md:flex-row items-start justify-between gap-6 pb-6 border-b border-gray-100">
                     <div className="flex flex-col sm:flex-row items-start sm:items-center gap-5">
                         <img
-                            src={profile.profileImage || 'https://placehold.net/avatar.svg?text=DR&bg=212121'}
+                            src={getImageUrl(profile.profileImage)}
                             alt={profile.name || 'Doctor'}
                             className="w-24 h-24 rounded-2xl object-cover border border-gray-200 shadow-xs bg-gray-50"
                             onError={(e) => {
-                                e.target.src = 'https://placehold.net/avatar.svg?text=DR&bg=212121';
+                                e.currentTarget.onerror = null;
+                                e.currentTarget.src = defaultAvatar;
                             }}
                         />
                         <div>

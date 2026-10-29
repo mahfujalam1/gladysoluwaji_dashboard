@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { Image, Modal, Spin } from 'antd';
 import { useNavigate } from 'react-router-dom';
+import { defaultAvatar } from '../../../utils/imageUrl';
+import defaultDocument from '../../../assets/default-document.svg';
 import {
     LuBuilding,
     LuMail,
@@ -66,7 +68,8 @@ const DoctorDetailsModal = ({ open, onClose, doctor, isLoading }) => {
                                 alt={doctor.name}
                                 className="w-20 h-20 rounded-2xl object-cover border border-gray-200 shadow-2xs bg-white"
                                 onError={(e) => {
-                                    e.target.src = 'https://placehold.net/avatar.svg?text=DR&bg=212121';
+                                    e.currentTarget.onerror = null;
+                                    e.currentTarget.src = defaultAvatar;
                                 }}
                             />
                             <div>
@@ -165,7 +168,7 @@ const DoctorDetailsModal = ({ open, onClose, doctor, isLoading }) => {
                                                 src={doc}
                                                 alt={`doc-${idx}`}
                                                 className="w-24! h-24! object-cover"
-                                                fallback="https://placehold.net/document.svg?text=Doc&bg=f3f4f6"
+                                                fallback={defaultDocument}
                                             />
                                         </div>
                                     ))

@@ -7,12 +7,13 @@ import { Button } from 'antd';
 import { GrDocumentDownload } from 'react-icons/gr';
 import { FaEye } from 'react-icons/fa';
 import BookingDetails from './modal/BookingDetails';
+import defaultAvatar from '../../assets/default-avatar.svg';
 
 const dummyPatients = [
     {
         id: '1',
         patientName: 'Taigo Felipe',
-        avatar: 'https://placehold.net/avatar.svg?text=TF&bg=212121',
+        avatar: defaultAvatar,
         contactNumber: '+1 415 998 7766',
         email: 'tiagofelipe@email.com',
         bookingDate: '10 Nov 2025',
@@ -36,7 +37,7 @@ const dummyPatients = [
     {
         id: '2',
         patientName: 'Jane Doe',
-        avatar: 'https://placehold.net/avatar.svg?text=JD&bg=212121',
+        avatar: defaultAvatar,
         contactNumber: '+1 415 998 7766',
         email: 'janedoe@email.com',
         bookingDate: '10 Nov 2025',
@@ -60,7 +61,7 @@ const dummyPatients = [
     {
         id: '3',
         patientName: 'John Smith',
-        avatar: 'https://placehold.net/avatar.svg?text=JS&bg=212121',
+        avatar: defaultAvatar,
         contactNumber: '+1 415 998 7766',
         email: 'johnsmith@email.com',
         bookingDate: '10 Nov 2025',
@@ -84,7 +85,7 @@ const dummyPatients = [
     {
         id: '4',
         patientName: 'Emily Jones',
-        avatar: 'https://placehold.net/avatar.svg?text=EJ&bg=212121',
+        avatar: defaultAvatar,
         contactNumber: '+1 415 998 7766',
         email: 'emilyjones@email.com',
         bookingDate: '10 Nov 2025',
@@ -108,7 +109,7 @@ const dummyPatients = [
     {
         id: '5',
         patientName: 'Michael Brown',
-        avatar: 'https://placehold.net/avatar.svg?text=MB&bg=212121',
+        avatar: defaultAvatar,
         contactNumber: '+1 415 998 7766',
         email: 'michael.brown@email.com',
         bookingDate: '10 Nov 2025',
@@ -132,7 +133,7 @@ const dummyPatients = [
     {
         id: '6',
         patientName: 'Sarah Wilson',
-        avatar: 'https://placehold.net/avatar.svg?text=SW&bg=212121',
+        avatar: defaultAvatar,
         contactNumber: '+1 415 998 7766',
         email: 'sarah.wilson@email.com',
         bookingDate: '10 Nov 2025',
@@ -225,6 +226,10 @@ const FundReturn = () => {
                                 src={patient.avatar}
                                 alt="avatar"
                                 className="w-10 h-10 rounded-full"
+                                onError={(e) => {
+                                    e.currentTarget.onerror = null;
+                                    e.currentTarget.src = defaultAvatar;
+                                }}
                             />
                             <div className="font-medium">{patient.patientName}</div>
                         </div>

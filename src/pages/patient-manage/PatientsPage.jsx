@@ -4,6 +4,7 @@ import CustomCard from '../../components/common/CustomCard';
 import CustomPopconfirm from '../../components/shared/Popconfirm';
 import toast from '../../utils/toast';
 import PatientDetails from './modal/PatientDetailsModal';
+import { getImageUrl, defaultAvatar } from '../../utils/imageUrl';
 // import { LuTrash2 } from 'react-icons/lu';
 import CustomPagination from '../../components/shared/Pagination';
 import { useGetPatientsQuery, useTogglePatientStatusMutation } from '../../RTK/patient/patientApi';
@@ -30,7 +31,7 @@ const PatientsPage = () => {
             const mappedPatients = (Array.isArray(patients.data) ? patients.data : [patients.data]).map(patient => ({
                 id: patient._id,
                 name: patient.name,
-                avatar: patient.profileImage || 'https://placehold.net/avatar.svg?text=TF&bg=212121',
+                avatar: getImageUrl(patient.profileImage),
                 emergencyContact: patient.phone || 'N/A',
                 email: patient.email,
                 addedDate: patient.createdAt ? new Date(patient.createdAt).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }) : 'N/A',
@@ -138,6 +139,10 @@ const PatientsPage = () => {
                                         src={patient.avatar}
                                         alt="avatar"
                                         className="w-10 h-10 rounded-full object-cover shadow-sm bg-gray-50"
+                                        onError={(e) => {
+                                            e.currentTarget.onerror = null;
+                                            e.currentTarget.src = defaultAvatar;
+                                        }}
                                     />
                                     <div className="font-medium truncate" title={patient.name}>{patient.name}</div>
                                 </div>

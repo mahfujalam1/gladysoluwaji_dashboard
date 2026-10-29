@@ -4,13 +4,13 @@ import { useNavigate } from 'react-router-dom';
 import CustomPagination from '../../components/shared/Pagination';
 import { IoIosArrowBack } from 'react-icons/io';
 import { Button } from 'antd';
-import { GrDocumentDownload } from 'react-icons/gr';
+import defaultAvatar from '../../assets/default-avatar.svg';
 
 const dummyDoctors = [
     {
         id: '1',
         name: 'Taigo Felipe',
-        avatar: 'https://placehold.net/avatar.svg?text=TF&bg=212121',
+        avatar: defaultAvatar,
         email: 'tiagofelipe@email.com',
         transferAmount: '120.00',
         date: '2025-12-25',
@@ -23,7 +23,7 @@ const dummyDoctors = [
     {
         id: '2',
         name: 'Jane Doe',
-        avatar: 'https://placehold.net/avatar.svg?text=JD&bg=212121',
+        avatar: defaultAvatar,
         email: 'janedoe@email.com',
         transferAmount: '142.00',
         date: '2025-12-31',
@@ -36,7 +36,7 @@ const dummyDoctors = [
     {
         id: '3',
         name: 'John Smith',
-        avatar: 'https://placehold.net/avatar.svg?text=JS&bg=212121',
+        avatar: defaultAvatar,
         email: 'johnsmith@email.com',
         transferAmount: '1542.00',
         date: '2025-12-01',
@@ -49,7 +49,7 @@ const dummyDoctors = [
     {
         id: '4',
         name: 'Emily Jones',
-        avatar: 'https://placehold.net/avatar.svg?text=EJ&bg=212121',
+        avatar: defaultAvatar,
         email: 'emilyjones@email.com',
         transferAmount: '212.00',
         date: '2025-12-20',
@@ -62,7 +62,7 @@ const dummyDoctors = [
     {
         id: '5',
         name: 'Michael Brown',
-        avatar: 'https://placehold.net/avatar.svg?text=MB&bg=212121',
+        avatar: defaultAvatar,
         email: 'michael.brown@email.com',
         transferAmount: '1112.00',
         date: '2025-12-08',
@@ -75,7 +75,7 @@ const dummyDoctors = [
     {
         id: '6',
         name: 'Sarah Wilson',
-        avatar: 'https://placehold.net/avatar.svg?text=SW&bg=212121',
+        avatar: defaultAvatar,
         email: 'sarah.wilson@email.com',
         transferAmount: '4812.00',
         date: '2025-12-05',
@@ -85,7 +85,6 @@ const dummyDoctors = [
             accountNumber: '5544332211',
         },
     },
-
 ];
 
 const FundTransfer = () => {

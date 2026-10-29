@@ -1,7 +1,7 @@
 
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
-const BASE_URL = "https://api.wecurehealth.com";
+export const BASE_URL = "https://api.wecurehealth.com";
 
 const baseQuery = fetchBaseQuery({
   baseUrl: BASE_URL,
@@ -32,6 +32,8 @@ const baseQueryWithReauth = async (args, api, extraOptions) => {
 export const api = createApi({
   reducerPath: 'authApi',
   baseQuery: baseQueryWithReauth,
-  tagTypes: ['Doctors', 'NewDoctors', 'DoctorAppointments', 'DoctorBookingDetails', 'Users', 'Specialists', 'WellnessTips', 'LegalContent', 'AuditLogs'],
+  refetchOnFocus: false,
+  refetchOnReconnect: false,
+  tagTypes: ['Profile', 'Doctors', 'NewDoctors', 'DoctorAppointments', 'DoctorBookingDetails', 'Users', 'Specialists', 'WellnessTips', 'LegalContent', 'AuditLogs'],
   endpoints: (builder) => ({}),
 });

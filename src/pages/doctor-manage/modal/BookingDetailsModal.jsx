@@ -2,6 +2,7 @@ import React from 'react';
 import { Collapse, Image, Modal, Spin, Tag } from 'antd';
 import { useLocation } from 'react-router-dom';
 import { useGetDoctorBookingDetailsByIdQuery } from '../../../RTK/doctor/doctorApi';
+import { getImageUrl, defaultAvatar } from '../../../utils/imageUrl';
 
 const { Panel } = Collapse;
 
@@ -44,9 +45,13 @@ const BookingDetailsModal = ({ open, onClose, appointmentDetails }) => {
                         {/* Patient Info */}
                         <div className="flex items-center">
                             <img
-                                src={details?.patient?.profileImage || 'https://placehold.net/avatar.svg'}
+                                src={getImageUrl(details?.patient?.profileImage)}
                                 alt="patient avatar"
                                 className="w-24 h-24 rounded-full mr-4 object-cover"
+                                onError={(e) => {
+                                    e.currentTarget.onerror = null;
+                                    e.currentTarget.src = defaultAvatar;
+                                }}
                             />
                             <div>
                                 <h2 className="text-xl font-bold">{details?.patient?.name || 'N/A'}</h2>
@@ -109,9 +114,13 @@ const BookingDetailsModal = ({ open, onClose, appointmentDetails }) => {
                             <h3 className="text-sm font-semibold text-gray-700 mb-1">Doctor</h3>
                             <div className="flex items-center gap-2 mb-2">
                                 <img
-                                    src={details?.doctor?.userId?.profileImage || 'https://placehold.net/avatar.svg'}
+                                    src={getImageUrl(details?.doctor?.userId?.profileImage)}
                                     alt="doctor"
                                     className="w-10 h-10 rounded-full object-cover"
+                                    onError={(e) => {
+                                        e.currentTarget.onerror = null;
+                                        e.currentTarget.src = defaultAvatar;
+                                    }}
                                 />
                                 <div>
                                     <p className="text-base font-bold text-gray-800">{details?.doctor?.userId?.name || 'N/A'}</p>

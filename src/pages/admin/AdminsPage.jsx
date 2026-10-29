@@ -9,6 +9,7 @@ import toast from '../../utils/toast';
 import { FaUserCheck, FaUserSlash } from 'react-icons/fa6';
 import AddAdmin from './modal/AddAdmin';
 import Loader from '../../components/shared/Loader';
+import { getImageUrl, defaultAvatar } from '../../utils/imageUrl';
 
 const Admin = () => {
     const { data: admins, isLoading } = useGetAdminsQuery();
@@ -18,7 +19,7 @@ const Admin = () => {
         if (admins) {
             const mappedAdmins = (admins.users || admins.data || admins || []).map(admin => ({
                 id: admin._id,
-                avatar: admin.avatar || 'https://placehold.net/avatar.svg',
+                avatar: getImageUrl(admin.avatar),
                 name: admin.name || `${admin.firstName || ''} ${admin.lastName || ''}`.trim(),
                 email: admin.email,
                 phone: admin.phoneNumber || admin.phone,
@@ -102,7 +103,11 @@ const Admin = () => {
                                 <img
                                     src={admin.avatar}
                                     alt="avatar"
-                                    className="w-10 h-10 rounded-full"
+                                    className="w-10 h-10 rounded-full object-cover"
+                                    onError={(e) => {
+                                        e.currentTarget.onerror = null;
+                                        e.currentTarget.src = defaultAvatar;
+                                    }}
                                 />
                                 <div className="font-medium">{admin.name}</div>
                             </div>

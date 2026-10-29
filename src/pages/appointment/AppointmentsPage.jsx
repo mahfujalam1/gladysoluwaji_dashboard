@@ -10,6 +10,7 @@ import CustomPopconfirm from '../../components/shared/Popconfirm';
 import toast from '../../utils/toast';
 import { useGetAppointmentsQuery } from '../../RTK/appointment/appointmentsApi';
 import Loader from '../../components/shared/Loader';
+import { getImageUrl, defaultAvatar } from '../../utils/imageUrl';
 
 const AppointmentsPage = () => {
     const [patients, setPatients] = useState([]);
@@ -29,7 +30,7 @@ const AppointmentsPage = () => {
             const mappedPatients = appointmentsData.data.map(appointment => ({
                 id: appointment._id,
                 patientName: appointment.patientName,
-                avatar: appointment.patientProfileImage || 'https://placehold.net/avatar.svg',
+                avatar: getImageUrl(appointment.patientProfileImage),
                 email: appointment.patientEmail,
                 visitingTime: appointment.appointmentTime,
                 visitSpecialties: appointment.specialtyName,
@@ -147,6 +148,10 @@ const AppointmentsPage = () => {
                                         src={patient.avatar}
                                         alt="avatar"
                                         className="w-10 h-10 rounded-full object-cover"
+                                        onError={(e) => {
+                                            e.currentTarget.onerror = null;
+                                            e.currentTarget.src = defaultAvatar;
+                                        }}
                                     />
                                     <div>
                                         <div className="font-medium">

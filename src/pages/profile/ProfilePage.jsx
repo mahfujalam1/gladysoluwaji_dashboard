@@ -3,15 +3,24 @@ import { Skeleton } from 'antd';
 import CustomCard from '../../components/common/CustomCard';
 import { FiChevronRight, FiLogOut } from 'react-icons/fi';
 import { useNavigate } from 'react-router-dom';
-import { FaRegEdit } from 'react-icons/fa';
+import { FaRegEdit, FaUser } from 'react-icons/fa';
 import toast from '../../utils/toast';
 import { useGetProfileQuery } from '../../RTK/profile/profileApi';
+import { getImageUrl } from '../../utils/imageUrl';
 
 const ProfilePage = () => {
-    const { data: profileData, isLoading: profileLoading, error: profileError } = useGetProfileQuery();
+    const { data: profileData, isLoading: profileLoading, error: profileError } = useGetProfileQuery(undefined, {
+        refetchOnFocus: false,
+        refetchOnReconnect: false,
+    });
     const navigate = useNavigate();
+    const [imageError, setImageError] = useState(false);
 
     const user = profileData?.data || profileData || {};
+
+    const rawImage = user?.profileImage;
+    const hasValidImage = rawImage && typeof rawImage === 'string' && rawImage.trim() !== '' && !rawImage.includes('placehold.net') && !imageError;
+    const profileImageUrl = hasValidImage ? getImageUrl(rawImage) : null;
 
     const handleLogout = () => {
         localStorage.removeItem('authToken');
@@ -50,11 +59,18 @@ const ProfilePage = () => {
 
                         {/* Avatar + Name + Email */}
                         <div>
-                            <img
-                                className="w-24 h-24 mb-4 rounded-full object-cover"
-                                src={user?.profileImage || 'https://placehold.net/avatar.svg'}
-                                alt={user?.name || 'Profile'}
-                            />
+                            {profileImageUrl ? (
+                                <img
+                                    className="w-24 h-24 mb-4 rounded-full object-cover border border-gray-200"
+                                    src={profileImageUrl}
+                                    alt={user?.name || 'Profile'}
+                                    onError={() => setImageError(true)}
+                                />
+                            ) : (
+                                <div className="w-24 h-24 mb-4 rounded-full bg-[#006C93]/10 text-[#006C93] flex items-center justify-center border border-[#006C93]/20">
+                                    <FaUser className="text-4xl" />
+                                </div>
+                            )}
                             <div>
                                 <h2 className="text-lg font-bold">{user?.name || 'N/A'}</h2>
                                 <p className="text-gray-500 text-sm">{user?.email || 'N/A'}</p>

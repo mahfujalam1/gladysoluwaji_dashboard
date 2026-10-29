@@ -4,6 +4,7 @@ import toast from '../../utils/toast';
 import DoctorDetailsModal from './modal/DoctorDetailsModal';
 import { useNavigate } from 'react-router-dom';
 import CustomPagination from '../../components/shared/Pagination';
+import { getImageUrl, defaultAvatar } from '../../utils/imageUrl';
 import {
     useGetDoctorsQuery,
     useGetDoctorByIdQuery,
@@ -103,7 +104,7 @@ const DoctorsPage = () => {
                 name: doctor.userId?.name || 'Unnamed Doctor',
                 specialist: doctor.specialtyId?.name || 'General Practice',
                 hospital: doctor.currentOrganization || 'Not Specified',
-                avatar: doctor.userId?.profileImage || 'https://placehold.net/avatar.svg?text=DR&bg=212121',
+                avatar: getImageUrl(doctor.userId?.profileImage),
                 phone: doctor.userId?.phone || 'N/A',
                 email: doctor.userId?.email || 'N/A',
                 mdcnRegistrationNumber: doctor.mdcnRegistrationNumber || 'N/A',
@@ -194,7 +195,7 @@ const DoctorsPage = () => {
             name: doc.userId?.name || 'N/A',
             specialist: doc.specialtyId?.name || 'N/A',
             hospital: doc.currentOrganization || 'N/A',
-            avatar: doc.userId?.profileImage || 'https://placehold.net/avatar.svg?text=DR&bg=212121',
+            avatar: getImageUrl(doc.userId?.profileImage),
             phone: doc.userId?.phone || 'N/A',
             email: doc.userId?.email || 'N/A',
             requestedDate: doc.createdAt ? new Date(doc.createdAt).toLocaleDateString('en-GB') : 'N/A',
@@ -381,7 +382,8 @@ const DoctorsPage = () => {
                                     alt={doctor.name}
                                     className="w-12 h-12 rounded-full object-cover shrink-0 border border-gray-100 shadow-2xs bg-gray-50"
                                     onError={(e) => {
-                                        e.target.src = 'https://placehold.net/avatar.svg?text=DR&bg=212121';
+                                        e.currentTarget.onerror = null;
+                                        e.currentTarget.src = defaultAvatar;
                                     }}
                                 />
                                 <div className="min-w-0">

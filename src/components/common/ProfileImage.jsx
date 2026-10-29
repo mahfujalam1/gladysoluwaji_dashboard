@@ -1,46 +1,35 @@
 import React, { useState, useEffect } from "react";
-import Avatar from "../../assets/avater.png";
+import defaultAvatar from "../../assets/default-avatar.svg";
+import { getImageUrl } from "../../utils/imageUrl";
 
-const FALLBACK_IMAGE =
-    "https://placehold.net/avatar.svg?text=TF&bg=212121";
-
-const ProfileImage = ({ alt = "image", className = "", src, ...props }) => {
-    const [imgSrc, setImgSrc] = useState(src || Avatar);
+const ProfileImage = ({ alt = "Profile", className = "", src, onClick, ...props }) => {
+    const [imgSrc, setImgSrc] = useState(() => (src ? getImageUrl(src) : defaultAvatar));
+    const [hasError, setHasError] = useState(false);
 
     useEffect(() => {
         if (src) {
-            setImgSrc(src);
+            setImgSrc(getImageUrl(src));
+            setHasError(false);
+        } else {
+            setImgSrc(defaultAvatar);
         }
     }, [src]);
 
-    useEffect(() => {
-        const fetchProfileImage = async () => {
-            try {
-
-                // API
-
-                const data = {
-                    avatar: "",
-                };
-
-                if (data?.avatar && !src) {
-                    setImgSrc(data.avatar);
-                }
-            } catch (error) {
-                console.error("Image API failed", error);
-            }
-        };
-
-        fetchProfileImage();
-    }, [src]);
+    const handleError = () => {
+        if (!hasError) {
+            setHasError(true);
+            setImgSrc(defaultAvatar);
+        }
+    };
 
     return (
         <img
             src={imgSrc}
             alt={alt}
             className={`rounded-full object-cover ${className}`}
+            onClick={onClick}
+            onError={handleError}
             {...props}
-            onError={() => setImgSrc(FALLBACK_IMAGE)}
         />
     );
 };
